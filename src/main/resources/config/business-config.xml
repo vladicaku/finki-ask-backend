@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Repository and Service layers -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- ========================= RESOURCE DEFINITIONS ========================= -->
+
+	<!-- Configurer that replaces ${...} placeholders with values from a properties 
+		file (in this case, JDBC-related settings for the JPA EntityManager definition 
+		below) -->
+	<context:property-placeholder location="classpath:config/datasource-access.properties" order="1" ignore-unresolvable="true" />
+
+	<!-- import the dataSource definition -->
+	<import resource="datasource-config.xml" />
+	
+	<!-- Transactional -->
+	<tx:annotation-driven />
+	
+	<!-- Component scan -->
+	<context:component-scan base-package="finki.ask" />
+
+	<!-- JPA config (we will use JPA instead of Hibernate) -->
+	<beans>
+		<jpa:repositories base-package="finki.ask.repository" />
+		
+		
+		<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+			p:dataSource-ref="dataSource">
+			<property name="jpaVendorAdapter">
+				<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"
+					p:database="${jpa.database}" p:generateDdl="${jpa.generateDDL}"
+					p:showSql="${jpa.showSQL}" />
+			</property>
+			<property name="persistenceUnitName" value="ask" />
+			<property name="packagesToScan" value="finki.ask" />
+		</bean>
+		
+		<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
+			p:entityManagerFactory-ref="entityManagerFactory" />
+			
+		<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+	</beans>
+	
+	
+	<!-- Hibernate Session Factory -->
+	<!-- 
+		<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="finki.ask.model" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<!- -
+				<prop key="hibernate.current_session_context_class">thread</prop> Ovoj mi ebese mater celo vreme 
+				 - ->
+				<prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.use_sql_comments">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <!- -
+                <prop key="hibernate.hbm2ddl.auto">create</prop>
+                <prop key="hibernate.hbm2ddl.auto">create-drop</prop> 
+                <prop key="hibernate.hbm2ddl.auto">validate</prop>
+                 - ->
+			</props>
+		</property>
+	</bean>
+	 -->
+	
+	<!-- Hibernate Exception PostProcessor -->
+	<!-- 
+	<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" 
+		id="PersistenceExceptionTranslator" />
+	--> 
+
+	<!-- Hibernate Transaction Manager -->
+	<!-- 
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+     -->
+
+</beans>
