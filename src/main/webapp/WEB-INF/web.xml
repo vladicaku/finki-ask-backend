@@ -3,22 +3,20 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
                         http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
                         version="3.0">
-    <display-name>Finki Ask</display-name>
-	<description>Short tests and surveys</description>
-
-	<context-param>
+  <display-name>Archetype Created Web Application</display-name>
+  
+  <context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>classpath:config/business-config.xml</param-value>
 		<!-- za security vo param-value se dodava: -->
-		<!--  ;classpath:config/security-rest-config.xml -->
+		<!--  ;classpath:spring/security-rest-config.xml -->
 	</context-param>
-	
+
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
-    
-    
-    <servlet>
+	
+	<servlet>
 		<servlet-name>springDispatcher</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
@@ -27,10 +25,21 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-	
+
 	<servlet-mapping>
 		<servlet-name>springDispatcher</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
-
+	
+	<!-- Cors Filter by Vladica Jovanovski. To be removed and replaced with Spring Security -->
+	<!-- For testing only. To be removed in production. 
+	<filter>
+	    <filter-name>corsFilter</filter-name>
+	    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	
+	<filter-mapping>
+	    <filter-name>corsFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping> -->
 </web-app>

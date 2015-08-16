@@ -1,6 +1,6 @@
 package finki.ask.model;
 
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -16,6 +16,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import finki.ask.json.view.View;
 
@@ -38,6 +39,7 @@ public class Question extends BaseEntity {
 	private Test test;
 	
 	@OneToMany(mappedBy = "question", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonDeserialize(as=LinkedHashSet.class)
 	@JsonView(View.Test.class)
 	private Set<Answer> answers;
 

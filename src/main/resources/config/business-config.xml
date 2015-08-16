@@ -29,13 +29,17 @@
 	<beans>
 		<jpa:repositories base-package="finki.ask.repository" />
 		
-		
+		<!--  
+		<bean id="corsFilter" class="finki.ask.filter.CorsFilter" />
+		-->
+		 
 		<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
 			p:dataSource-ref="dataSource">
 			<property name="jpaVendorAdapter">
 				<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"
 					p:database="${jpa.database}" p:generateDdl="${jpa.generateDDL}"
-					p:showSql="${jpa.showSQL}" />
+					p:showSql="${jpa.showSQL}" 
+					 />
 			</property>
 			<property name="persistenceUnitName" value="ask" />
 			<property name="packagesToScan" value="finki.ask" />

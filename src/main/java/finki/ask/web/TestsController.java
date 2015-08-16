@@ -1,17 +1,17 @@
 package finki.ask.web;
 
 import java.util.Date;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +35,7 @@ import finki.ask.service.TestService;
 
 @RestController
 @RequestMapping("/admin/tests")
+@CrossOrigin
 public class TestsController {
 
 	@Autowired
@@ -57,6 +58,7 @@ public class TestsController {
 	@ResponseBody
 	@JsonView(View.Test.class)
 	public List<Test> findAll(HttpServletRequest request) {
+		System.out.println("<<<<<< List handler");
 		String parm = request.getParameter("name");
 		long userId = getUserId(request);
 		if (parm == null) {
@@ -67,30 +69,45 @@ public class TestsController {
 	}
 	
 	
-	@RequestMapping(produces = "application/json", consumes = "application/json", method = RequestMethod.POST)
+	@RequestMapping(consumes = "application/json", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity create(@RequestBody Test test, HttpServletRequest request, HttpServletResponse response) {
-		try {
-			ObjectMapper mapper = new ObjectMapper();
-			long userId = getUserId(request);
-			test.setCreator(userId);
+	public ResponseEntity<Test> create(@RequestBody Test test, HttpServletRequest request, HttpServletResponse response) {
+		HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Allow-Origin", "*");
+		System.out.println("<<<<<< Create handler");
+		
+		//try {
+			//ObjectMapper mapper = new ObjectMapper();
+			//System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(test));
+			//long userId = getUserId(request);
+			//test.setCreator(userId);
+			System.out.println("<<<<<<  " + test.getName());
+			System.out.println("<<<<<<  " + test.getPassword());
+			System.out.println("<<<<<<  " + test.getType().toString());
+			System.out.println("<<<<<<  " + test.getStart().toString());
 			
-			testService.save(test);
 			for (Question q : test.getQuestions()) {
 				q.setTest(test);
-				questionService.save(q);
 				for (Answer a : q.getAnswers()) {
 					a.setQuestion(q);
-					answerService.save(a);
 				}
 			}
 			
-			System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(test));
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
+			testService.save(test);
+//			for (Question q : test.getQuestions()) {
+//				q.setTest(test);
+//				questionService.save(q);
+//				for (Answer a : q.getAnswers()) {
+//					a.setQuestion(q);
+//					answerService.save(a);
+//				}
+//			}
+			
+//		} catch (Exception e) {
+//			return new ResponseEntity<Test>(headers ,HttpStatus.BAD_REQUEST);
+//		}
 		
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<Test>(headers, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/{id}", produces = "application/json", method = RequestMethod.GET)
@@ -103,7 +120,7 @@ public class TestsController {
 	@RequestMapping(value = "/{id}", produces = "application/json", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity update(@RequestBody Test test, @PathVariable long id, HttpServletRequest request, HttpServletResponse response) {
-		try{
+		//try{
 			Test originalTest = testService.findById(id);
 			long userId = getUserId(request);
 			
@@ -120,10 +137,10 @@ public class TestsController {
 //				questionsToBeDeleted.remove(q);
 //			}
 			
-		}
-		catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
+//		}
+//		catch (Exception e) {
+//			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//		}
 		
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

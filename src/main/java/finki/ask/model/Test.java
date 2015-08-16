@@ -1,6 +1,7 @@
 package finki.ask.model;
 
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -13,12 +14,12 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Cascade;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import finki.ask.json.view.View;
 
@@ -35,8 +36,8 @@ public class Test extends BaseEntity {
 	@JsonView(View.Test.class)
 	private TestType type;
 
-	@DateTimeFormat(pattern="dd.MM.yyyy hh:mm")
-	@JsonFormat(pattern="dd.MM.yyyy hh:mm")
+	@DateTimeFormat(pattern="dd.MM.yyyy HH:mm")
+	@JsonFormat(pattern="dd.MM.yyyy HH:mm")
 	@NotNull
 	@JsonView(View.Test.class)
 	private Date dateCreated;
@@ -48,12 +49,14 @@ public class Test extends BaseEntity {
 
 	@NotNull
 	@JsonView(View.Test.class)
-	@JsonFormat(pattern="dd.MM.yyyy hh:mm")
+	@DateTimeFormat(pattern="dd.MM.yyyy HH:mm")
+	@JsonFormat(pattern="dd.MM.yyyy HH:mm")
 	private Date start;
 
 	@NotNull
 	@JsonView(View.Test.class)
-	@JsonFormat(pattern="dd.MM.yyyy hh:mm")
+	@DateTimeFormat(pattern="dd.MM.yyyy HH:mm")
+	@JsonFormat(pattern="dd.MM.yyyy HH:mm")
 	private Date end;
 	
 	@NotNull
@@ -69,8 +72,8 @@ public class Test extends BaseEntity {
 	private boolean isActive;
 
 	@OneToMany(mappedBy = "test", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval=true)
+	@JsonDeserialize(as=LinkedHashSet.class)
 	@JsonView(View.TestWithQuestions.class)
-	//@JsonManagedReference
 	private Set<Question> questions;
 
 	public Test() {
