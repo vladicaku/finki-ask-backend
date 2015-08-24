@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -28,52 +29,57 @@ import finki.ask.json.view.View;
 public class Test extends BaseEntity {
 
 	@NotBlank
-	@JsonView(View.Test.class)
+	@JsonView(View.Public.class)
 	private String name;
 
 	@NotNull
 	@Enumerated
-	@JsonView(View.Test.class)
+	@JsonView(View.Public.class)
 	private TestType type;
 
-	@DateTimeFormat(pattern="dd.MM.yyyy HH:mm")
-	@JsonFormat(pattern="dd.MM.yyyy HH:mm")
 	@NotNull
-	@JsonView(View.Test.class)
+	@JsonView(View.Public.class)
+	private boolean isPublic;
+
+	@NotNull
+	@DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
+	@JsonFormat(pattern = "dd/MM/yyyy HH:mm")
+	@JsonView(View.Public.class)
 	private Date dateCreated;
 
-	@NotNull
+	//@NotNull
 	//@ManyToOne
-	@JsonView(View.Test.class)
-	private long creator;
+	//@JsonView(View.SummaryAdmin.class)
+	//private long creator;
 
 	@NotNull
-	@JsonView(View.Test.class)
-	@DateTimeFormat(pattern="dd.MM.yyyy HH:mm")
-	@JsonFormat(pattern="dd.MM.yyyy HH:mm")
+	@DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
+	@JsonFormat(pattern = "dd/MM/yyyy HH:mm")
+	@JsonView(View.Public.class)
 	private Date start;
 
 	@NotNull
-	@JsonView(View.Test.class)
-	@DateTimeFormat(pattern="dd.MM.yyyy HH:mm")
-	@JsonFormat(pattern="dd.MM.yyyy HH:mm")
+	@DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
+	@JsonFormat(pattern = "dd/MM/yyyy HH:mm")
+	@JsonView(View.Public.class)
 	private Date end;
-	
+
 	@NotNull
-	@JsonView(View.Test.class)
+	@JsonView(View.Public.class)
 	private int duration;
 
-	@Column(name = "test_password")
 	@NotBlank
-	@JsonView(View.Test.class)
+	@Column(name = "test_password")
+	@JsonView(View.CompleteAdmin.class)
 	private String password;
-	
+
 	@Transient
+	@JsonView(View.Public.class)
 	private boolean isActive;
 
-	@OneToMany(mappedBy = "test", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval=true)
-	@JsonDeserialize(as=LinkedHashSet.class)
-	@JsonView(View.TestWithQuestions.class)
+	@OneToMany(mappedBy = "test", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonDeserialize(as = LinkedHashSet.class)
+	@JsonView(View.CompleteAPI.class)
 	private Set<Question> questions;
 
 	public Test() {
@@ -103,12 +109,16 @@ public class Test extends BaseEntity {
 		this.dateCreated = dateCreated;
 	}
 
-	public long getCreator() {
-		return creator;
-	}
+//	public User getCreator() {
+//		return creator;
+//	}
+//
+//	public void setCreator(User creator) {
+//		this.creator = creator;
+//	}
 
-	public void setCreator(long creator) {
-		this.creator = creator;
+	public void setPublic(boolean isPublic) {
+		this.isPublic = isPublic;
 	}
 
 	public Date getStart() {
@@ -157,5 +167,13 @@ public class Test extends BaseEntity {
 
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
+	}
+
+	public boolean isPublic() {
+		return isPublic;
+	}
+
+	public void setOpen(boolean isPublic) {
+		this.isPublic = isPublic;
 	}
 }

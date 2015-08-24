@@ -3,6 +3,7 @@ package finki.ask.model;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -17,16 +18,21 @@ import finki.ask.json.view.View;
 public class Answer extends BaseEntity {
 
 	@NotBlank
-	@JsonView(View.Test.class)
+	@JsonView(View.Public.class)
 	private String text;
 
-	@JsonView(View.Test.class)
+	@JsonView(View.CompleteAdmin.class)
 	private boolean isCorrect;
 
 	@NotNull
 	@ManyToOne
 	@JsonIgnore
 	private Question question;
+
+	// smartphone fix
+	@Transient
+	@JsonView(View.CompleteAPI.class)
+	private long questionID;
 
 	public Answer() {
 	}
@@ -53,6 +59,14 @@ public class Answer extends BaseEntity {
 
 	public void setQuestion(Question question) {
 		this.question = question;
+	}
+
+	public long getQuestionID() {
+		return questionID;
+	}
+
+	public void setQuestionID(long questionID) {
+		this.questionID = questionID;
 	}
 
 }

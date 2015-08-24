@@ -6,23 +6,34 @@ import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sun.istack.NotNull;
+
 @Entity
-@Table(name="student_answers")
+@Table(name = "student_answers")
 public class StudentAnswer extends BaseEntity {
-	
+
 	@NotEmpty
 	@ManyToOne
 	private Test test;
-	
+
 	@NotEmpty
 	@ManyToOne
 	private Question question;
-	
+
 	@NotEmpty
 	@ManyToOne
 	private Answer answer;
-	
-	private boolean correct; // this is calculated only once, after the answer is sent
+
+	private String text;
+
+	@NotNull
+	@ManyToOne()
+	@JsonIgnore
+	private TestInstance testInstance;
+
+	private boolean correct; // this is calculated only once, after the answer
+								// is sent
 
 	public Test getTest() {
 		return test;
@@ -54,6 +65,22 @@ public class StudentAnswer extends BaseEntity {
 
 	public void setCorrect(boolean correct) {
 		this.correct = correct;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	public TestInstance getTestInstance() {
+		return testInstance;
+	}
+
+	public void setTestInstance(TestInstance testInstance) {
+		this.testInstance = testInstance;
 	}
 
 }

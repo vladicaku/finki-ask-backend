@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import finki.ask.model.Test;
+import finki.ask.model.TestType;
 
 public interface TestService {
 	
@@ -18,6 +19,10 @@ public interface TestService {
 	public Page<Test> findAll(Pageable pageable);
 	
 	public Test findById(long id);
+	
+	public List<Test> findAllActive();
+	
+	public List<Test> findActiveByType(TestType type);
 	
 	public List<Test> findByName(String name);
 	

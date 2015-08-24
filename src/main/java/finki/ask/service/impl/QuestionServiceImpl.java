@@ -16,7 +16,6 @@ import finki.ask.service.QuestionService;
 public class QuestionServiceImpl implements QuestionService{
 
 	@Autowired
-	@JsonView(View.TestWithQuestions.class)
 	private QuestionRepository questionRepository;
 	
 	@Override

@@ -18,16 +18,10 @@ public class CorsFilter implements Filter {
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
 			throws IOException, ServletException {
 		HttpServletResponse response = (HttpServletResponse) res;
-		HttpServletRequest request = (HttpServletRequest) req;
-//		response.addHeader("Access-Control-Allow-Origin", "http://localhost:63342");
-//		response.addHeader("Access-Control-Allow-Origin", "*");
-//		response.addHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-//		response.addHeader("Access-Control-Allow-Headers", "x-requested-with");
-//		response.addHeader("Access-Control-Expose-Headers", "x-requested-with");
 		response.setHeader("Access-Control-Allow-Origin", "*");
-	    response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+	    response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTION, DELETE");
 	    response.setHeader("Access-Control-Max-Age", "3600");
-	    response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
+	    response.setHeader("Access-Control-Allow-Headers", "X-Requested-With, Origin, Content-Type, Accept");
 		chain.doFilter(req, res);
 	}
 
@@ -41,25 +35,3 @@ public class CorsFilter implements Filter {
 		
 	}
 }
-
-// public class CorsFilter extends OncePerRequestFilter {
-// @Override
-// protected void doFilterInternal(HttpServletRequest request,
-// HttpServletResponse response, FilterChain filterChain)
-// throws ServletException, IOException {
-// System.out.println("<<<<<< FILTER");
-// response.addHeader("Access-Control-Allow-Origin", "*");
-//
-// if (request.getHeader("Access-Control-Request-Method") != null &&
-// "OPTIONS".equals(request.getMethod())) {
-// // CORS "pre-flight" request
-// response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-//// response.addHeader("Access-Control-Allow-Headers", "Authorization");
-// response.addHeader("Access-Control-Allow-Headers", "Content-Type");
-// response.addHeader("Access-Control-Max-Age", "1");
-// }
-//
-// filterChain.doFilter(request, response);
-// }
-//
-// }

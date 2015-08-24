@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import finki.ask.json.view.View;
 import finki.ask.model.Test;
+import finki.ask.model.TestType;
 import finki.ask.repository.TestRepository;
 import finki.ask.service.TestService;
 
@@ -41,6 +42,16 @@ public class TestServiceImpl implements TestService {
 		return null;
 	}
 
+	@Override
+	public List<Test> findAllActive() {
+		return testRepository.findAllActive();
+	}
+	
+	@Override
+	public List<Test> findActiveByType(TestType type) {
+		return testRepository.findActiveByType(type);
+	}
+	
 	@Override
 	public Test findById(long id) {
 		return populateIsActive(testRepository.findOne(id));

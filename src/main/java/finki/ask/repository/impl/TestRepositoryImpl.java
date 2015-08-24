@@ -1,5 +1,7 @@
 package finki.ask.repository.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -10,12 +12,30 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import finki.ask.model.Test;
+import finki.ask.model.TestType;
 import finki.ask.repository.TestRepositoryCustom;
 
 public class TestRepositoryImpl implements TestRepositoryCustom{
 
 	@PersistenceContext
 	private EntityManager entityManager;
+	
+	@Override
+	public List<Test> findAllActive() {
+		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		Date date = new Date();
+		return entityManager.createQuery("select t from Test t where :date between t.start and t.end")
+				.setParameter("date", date).getResultList();
+	}
+	
+	@Override
+	public List<Test> findActiveByType(TestType type) {
+		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		Date date = new Date();
+		return entityManager.createQuery("select t from Test t where :date between t.start and t.end and t.type = :type")
+				.setParameter("date", date).setParameter("type", type).getResultList();
+	
+	}
 	
 	@Override
 	public List<Test> findByName(String name) {

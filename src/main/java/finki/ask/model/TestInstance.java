@@ -1,13 +1,13 @@
 package finki.ask.model;
 
 import java.util.Date;
+import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "test_instances")
@@ -70,5 +70,4 @@ public class TestInstance extends BaseEntity {
 	public void setStudentIndex(long studentIndex) {
 		this.studentIndex = studentIndex;
 	}
-	
 }

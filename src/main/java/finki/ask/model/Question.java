@@ -23,24 +23,28 @@ import finki.ask.json.view.View;
 @Entity
 @Table(name = "questions")
 public class Question extends BaseEntity {
-	
+
 	@NotBlank
-	@JsonView(View.Test.class)
+	@JsonView(View.Public.class)
 	private String text;
-	
+
 	@NotNull
 	@Enumerated
-	@JsonView(View.Test.class)
+	@JsonView(View.Public.class)
 	private QuestionType type;
-	
+
+	@NotNull
+	@JsonView(View.Public.class)
+	private int points;
+
 	@NotNull
 	@ManyToOne
 	@JsonIgnore
 	private Test test;
-	
+
 	@OneToMany(mappedBy = "question", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JsonDeserialize(as=LinkedHashSet.class)
-	@JsonView(View.Test.class)
+	@JsonDeserialize(as = LinkedHashSet.class)
+	@JsonView(View.Public.class)
 	private Set<Answer> answers;
 
 	public Question() {
@@ -77,4 +81,13 @@ public class Question extends BaseEntity {
 	public void setAnswers(Set<Answer> answers) {
 		this.answers = answers;
 	}
+
+	public int getPoints() {
+		return points;
+	}
+
+	public void setPoints(int points) {
+		this.points = points;
+	}
+
 }
