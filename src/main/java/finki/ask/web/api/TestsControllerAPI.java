@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,9 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import finki.ask.json.model.ResponseStatus;
-import finki.ask.json.model.ResponseWrapper;
-import finki.ask.json.view.View;
+import finki.ask.api.model.ResponseStatus;
+import finki.ask.api.model.ResponseWrapper;
 import finki.ask.model.Answer;
 import finki.ask.model.Question;
 import finki.ask.model.QuestionType;
@@ -33,10 +33,11 @@ import finki.ask.service.QuestionService;
 import finki.ask.service.StudentAnswerService;
 import finki.ask.service.TestInstanceService;
 import finki.ask.service.TestService;
+import finki.ask.view.View;
 
 @RestController
 @RequestMapping("/api/tests")
-public class APITestsController {
+public class TestsControllerAPI {
 	
 	@Autowired
 	private TestService testService;
@@ -79,7 +80,7 @@ public class APITestsController {
 		ResponseWrapper responseWrapper = new ResponseWrapper();
 		responseWrapper.setResponseStatus(ResponseStatus.ERROR);
 		
-		Test test = testService.findById(id);
+		Test test = testService.findByIdActive(id);
 		HttpSession session = request.getSession(true);
 		TestInstance testInstance = (TestInstance) session.getAttribute("testInstance");
 		String password = request.getParameter("password");
@@ -127,99 +128,92 @@ public class APITestsController {
 	@ResponseBody
 	@JsonView(View.CompleteAPI.class)
 	@RequestMapping(value="/{id}", produces = "application/json", method = RequestMethod.POST)
-	public boolean submitAnswer(@PathVariable long id, @RequestBody finki.ask.json.model.Answer jsonAnswer, HttpServletRequest request, HttpServletResponse response) {
+	public ResponseWrapper submitAnswer(@PathVariable long id, @RequestBody List<finki.ask.api.model.Answer> jsonAnswers, HttpServletRequest request, HttpServletResponse response) {
 		
 		Test test = testService.findById(id);
 		HttpSession session = request.getSession(false);
+		ResponseWrapper responseWrapper = new ResponseWrapper();
+		responseWrapper.setResponseStatus(ResponseStatus.ERROR);
 		
 		// validate session
 		if (session == null) {
-			return false;
+			responseWrapper.setDescription("Session does not exist.");
+			return responseWrapper;
 		}
-		
 		
 		// validate date
 		TestInstance testInstance = (TestInstance) session.getAttribute("testInstance");
 		Date now = new Date();
 		if (now.compareTo(test.getEnd()) == 1) {
 			session.invalidate();
-			return false;
+			responseWrapper.setDescription("Your time has expired.");
+			return responseWrapper;
 		}
 		
 		// wrong test, testInstance is not opened for this test
 		if (id != testInstance.getTest().getId()) {
-			return false;
+			responseWrapper.setDescription("You do not have permission to access this page.");
+			return responseWrapper;
 		}
 		
-		// validate that question and answer belong in the test
-		Question question = questionService.findById(jsonAnswer.getQuestionId());
-		Answer answer = answerService.findById(jsonAnswer.getAnswerId());
-		
-		if (question == null || answer == null) {
-			return false;
-		}
-		
-		
-		boolean flag = false;
-		for (Question q : test.getQuestions()) {
-			if (q.equals(question)) {
-				flag = true;
-				break;
+		for (finki.ask.api.model.Answer jsonAnswer : jsonAnswers) {
+			Question question = questionService.findById(jsonAnswer.getQuestionId());
+			Answer answer = answerService.findById(jsonAnswer.getAnswerId());
+			
+			if (question == null || answer == null) {
+				responseWrapper.setDescription("Question or answer does not exist.");
+				return responseWrapper;
 			}
-		}
-		
-		if (!flag) {
-			return false;
-		}
-		
-		
-		flag = false;
-		for (Answer a : question.getAnswers()) {
-			if (a.equals(answer)) {
-				flag = true;
-				break;
+			
+			// validate that the question and the answers belong to the test
+			if (!answer.getQuestion().equals(question) || !question.getTest().equals(test)) {
+				responseWrapper.setDescription("Invalid question or answer.");
+				return responseWrapper;
 			}
-		}
+			
+			// try to load an existing answer if exist or create a new one if don't
+			StudentAnswer studentAnswer = studentAnswerService.findSpecific(testInstance, question, answer);
+			
+			if (studentAnswer == null) {
+				studentAnswer = new StudentAnswer();
+				studentAnswer.setQuestion(question);
+				studentAnswer.setAnswer(answer);
+				studentAnswer.setTestInstance(testInstance);
+			}
 		
-		if (!flag) {
-			return false;
-		}
-		
-		
-		// try to load an existing answer if exist or create a new one if don't
-		StudentAnswer studentAnswer = studentAnswerService.findSpecific(testInstance, question, answer);
-		
-		if (studentAnswer == null) {
-			studentAnswer = new StudentAnswer();
-			studentAnswer.setQuestion(question);
-			studentAnswer.setAnswer(answer);
-			studentAnswer.setTestInstance(testInstance);
-		}
-		
-		
-		// calculate isCorrect flag (faster graph calculations)
-		if (jsonAnswer.getText() != null) {
-			studentAnswer.setText(jsonAnswer.getText());
-		}
-		
-		if (question.getType() == QuestionType.TEXT) {
-			if (question.getText() == null) {
-				studentAnswer.setCorrect(false);
+			// calculate isCorrect flag ( reason: faster graph calculations)
+			if (question.getType() == QuestionType.TEXT) {
+				if (jsonAnswer.getText() == null) {
+					studentAnswer.setCorrect(false);
+				}
+				else {
+					String correctAnswer = answer.getText().trim().toLowerCase();
+					String newAnswer = jsonAnswer.getText().trim().toLowerCase();
+					studentAnswer.setCorrect(correctAnswer.equals(newAnswer));
+					studentAnswer.setText(jsonAnswer.getText());
+				}
 			}
 			else {
-				String correctAnswer = question.getText().trim().toLowerCase();
-				String newAnswer = jsonAnswer.getText().trim().toLowerCase(); 
-				studentAnswer.setCorrect(correctAnswer.equals(newAnswer));
+				studentAnswer.setCorrect(answer.isCorrect() == jsonAnswer.isChecked());
 			}
-		}
-		else {
-			// TODO: check type 
-			studentAnswer.setCorrect(answer.isCorrect() == jsonAnswer.isChecked());
+			
+			// persist
+			studentAnswerService.save(studentAnswer);
+			
 		}
 		
-		// persist
-		studentAnswerService.save(studentAnswer);
-		
-		return true;
+		responseWrapper.setResponseStatus(ResponseStatus.SUCCESS);
+		return responseWrapper;
+	}
+	
+	@ResponseBody
+	@JsonView(View.Public.class)
+	@ExceptionHandler(Exception.class)
+	public ResponseWrapper exceptionHandler(Exception ex) {
+		ResponseWrapper responseWrapper = new ResponseWrapper();
+		responseWrapper.setResponseStatus(ResponseStatus.ERROR);
+		responseWrapper.setDescription(ex.toString());
+		//Arrays.toString(ex.getStackTrace());
+		return responseWrapper;
 	}
 }

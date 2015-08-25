@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import finki.ask.json.view.View;
 import finki.ask.model.Test;
 import finki.ask.model.TestType;
 import finki.ask.repository.TestRepository;
 import finki.ask.service.TestService;
+import finki.ask.view.View;
 
 @Service
 public class TestServiceImpl implements TestService {
@@ -40,6 +40,11 @@ public class TestServiceImpl implements TestService {
 	@Override
 	public Page<Test> findAll(Pageable pageable) {
 		return null;
+	}
+	
+	@Override
+	public Test findByIdActive(long id) {
+		return testRepository.findByIdActive(id);
 	}
 
 	@Override

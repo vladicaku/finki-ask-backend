@@ -1,4 +1,4 @@
-package finki.ask.json.view;
+package finki.ask.view;
 
 public class View {
 	public interface Public {};

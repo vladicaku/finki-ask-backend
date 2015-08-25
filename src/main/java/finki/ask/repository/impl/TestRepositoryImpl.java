@@ -22,10 +22,17 @@ public class TestRepositoryImpl implements TestRepositoryCustom{
 	
 	@Override
 	public List<Test> findAllActive() {
-		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		Date date = new Date();
 		return entityManager.createQuery("select t from Test t where :date between t.start and t.end")
 				.setParameter("date", date).getResultList();
+	}
+	
+	@Override
+	public Test findByIdActive(long id) {
+		Date date = new Date();
+		return (Test) entityManager.createQuery("select t from Test t where :date between t.start and t.end and t.id = :id")
+				.setParameter("date", date).setParameter("id", id).getSingleResult();
+
 	}
 	
 	@Override
@@ -43,10 +50,8 @@ public class TestRepositoryImpl implements TestRepositoryCustom{
 	}
 	
 	/**
-	 * @param name
-	 *            Question name
-	 * @param id
-	 *            Creator (user) id
+	 * @param name Question name
+	 * @param id   Creator (user) id
 	 */
 	public List<Test> findByNameForUser(String name, Long id) {
 		return entityManager.createQuery("select t from Test t where t.name like :name and t.creator = :id").setParameter("name", name).setParameter("id", id).getResultList();

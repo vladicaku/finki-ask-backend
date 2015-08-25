@@ -8,6 +8,7 @@ import finki.ask.model.TestType;
 public interface TestRepositoryCustom {
 	public List<Test> findAllActive();
 	public List<Test> findActiveByType(TestType type);
+	public Test findByIdActive(long id);
 	public List<Test> findByName(String name);
 	public List<Test> findByNameForUser(String name, Long id);
 	public List<Test> findByNameExceptForUser(String name, Long id);

@@ -20,6 +20,8 @@ public interface TestService {
 	
 	public Test findById(long id);
 	
+	public Test findByIdActive(long id);
+	
 	public List<Test> findAllActive();
 	
 	public List<Test> findActiveByType(TestType type);

@@ -1,4 +1,4 @@
-package finki.ask.json.model;
+package finki.ask.api.model;
 
 import javax.persistence.Entity;
 

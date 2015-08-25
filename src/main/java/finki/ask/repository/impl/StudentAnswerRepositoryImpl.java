@@ -16,7 +16,7 @@ public class StudentAnswerRepositoryImpl implements StudentAnswerRepositoryCusto
 	
 	@Override
 	public StudentAnswer findSpecific(TestInstance testInstance, Question question, Answer answer) {
-		return (StudentAnswer) entityManager.createQuery("select sa from TestInstance sa where sa.testInstance = :testInstance and sa.question = :question and sa.answer = :answer")
+		return (StudentAnswer) entityManager.createQuery("select sa from StudentAnswer sa where sa.testInstance = :testInstance and sa.question = :question and sa.answer = :answer")
 				.setParameter("testInstance", testInstance).setParameter("question", question).setParameter("answer", answer).getSingleResult();
 	}
 

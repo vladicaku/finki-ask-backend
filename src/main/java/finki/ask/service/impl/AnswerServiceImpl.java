@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import finki.ask.json.view.View;
 import finki.ask.model.Answer;
 import finki.ask.repository.AnswerRepository;
 import finki.ask.service.AnswerService;
+import finki.ask.view.View;
 
 @Service
 public class AnswerServiceImpl implements AnswerService{

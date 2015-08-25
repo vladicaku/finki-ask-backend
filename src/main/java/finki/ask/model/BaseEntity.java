@@ -8,7 +8,7 @@ import javax.persistence.MappedSuperclass;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 
-import finki.ask.json.view.View;
+import finki.ask.view.View;
 
 @MappedSuperclass
 public class BaseEntity {

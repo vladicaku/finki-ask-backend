@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import finki.ask.json.view.View;
 import finki.ask.model.Answer;
 import finki.ask.model.Question;
 import finki.ask.model.QuestionType;
@@ -31,6 +30,7 @@ import finki.ask.model.TestType;
 import finki.ask.service.AnswerService;
 import finki.ask.service.QuestionService;
 import finki.ask.service.TestService;
+import finki.ask.view.View;
 
 //@CrossOrigin
 @RestController

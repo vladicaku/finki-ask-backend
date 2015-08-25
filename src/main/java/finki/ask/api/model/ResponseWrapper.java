@@ -1,7 +1,8 @@
-package finki.ask.json.model;
+package finki.ask.api.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import finki.ask.json.view.*;
+
+import finki.ask.view.*;
 
 public class ResponseWrapper {
 

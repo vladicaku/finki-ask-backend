@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import finki.ask.json.view.View;
+import finki.ask.view.View;
 
 @Entity
 @Table(name = "tests")

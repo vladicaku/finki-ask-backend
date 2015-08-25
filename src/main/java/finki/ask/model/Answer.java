@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.sun.istack.NotNull;
 
-import finki.ask.json.view.View;
+import finki.ask.view.View;
 
 @Entity
 @Table(name = "answers")

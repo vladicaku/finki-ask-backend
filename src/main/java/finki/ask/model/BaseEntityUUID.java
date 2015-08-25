@@ -11,7 +11,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import finki.ask.json.view.View;
+import finki.ask.view.View;
 
 @MappedSuperclass
 public class BaseEntityUUID {
