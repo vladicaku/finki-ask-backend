@@ -20,7 +20,13 @@ public class Answer extends BaseEntity {
 	@NotBlank
 	@JsonView(View.Public.class)
 	private String text;
-
+	
+	@JsonView(View.CompleteAdmin.class)
+	private String textCorrect;
+	
+	@JsonView(View.CompleteAdmin.class)
+	private long rangeCorrect;
+	
 	@JsonView(View.CompleteAdmin.class)
 	private boolean isCorrect;
 
@@ -32,7 +38,7 @@ public class Answer extends BaseEntity {
 	// smartphone fix
 	@Transient
 	@JsonView(View.CompleteAPI.class)
-	private long questionID;
+	private long questionId;
 
 	public Answer() {
 	}
@@ -61,12 +67,12 @@ public class Answer extends BaseEntity {
 		this.question = question;
 	}
 
-	public long getQuestionID() {
-		return questionID;
+	public long getQuestionId() {
+		return question.getId();
 	}
 
-	public void setQuestionID(long questionID) {
-		this.questionID = questionID;
+	public void setQuestionId(long questionID) {
+		this.questionId = questionID;
 	}
-
+	
 }

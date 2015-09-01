@@ -13,22 +13,22 @@ import com.sun.istack.NotNull;
 @Table(name = "student_answers")
 public class StudentAnswer extends BaseEntity {
 
-	@NotEmpty
+	@NotNull
 	@ManyToOne
 	private Test test;
 
-	@NotEmpty
+	@NotNull
 	@ManyToOne
 	private Question question;
 
-	@NotEmpty
+	@NotNull
 	@ManyToOne
 	private Answer answer;
 
 	private String text;
 
 	@NotNull
-	@ManyToOne()
+	@ManyToOne
 	@JsonIgnore
 	private TestInstance testInstance;
 

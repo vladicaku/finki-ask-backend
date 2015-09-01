@@ -1,13 +1,15 @@
 package finki.ask.api.model;
 
-import javax.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Answer {
 	
 	private long questionId;
 	
+	@JsonProperty("id")
 	private long answerId;
 	
+	@JsonProperty("isChecked")
 	private boolean isChecked;
 	
 	private String text;

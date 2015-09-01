@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import finki.ask.api.model.ResponseStatus;
 import finki.ask.api.model.ResponseWrapper;
@@ -37,6 +39,7 @@ import finki.ask.view.View;
 
 @RestController
 @RequestMapping("/api/tests")
+@CrossOrigin
 public class TestsControllerAPI {
 	
 	@Autowired
@@ -103,7 +106,7 @@ public class TestsControllerAPI {
 			testInstanceService.save(testInstance);
 			
 			session.setAttribute("testInstance", testInstance);
-			session.setMaxInactiveInterval(test.getDuration());
+			session.setMaxInactiveInterval(test.getDuration() * 60);
 		}
 		else {
 			Date now = new Date();
@@ -114,12 +117,6 @@ public class TestsControllerAPI {
 			// load already answerd questions		
 		}
 		
-		// smartphone fix
-		for (Question q : test.getQuestions()) {
-			for (Answer a : q.getAnswers()) {
-				a.setQuestionID(q.getId());
-			}
-		}
 		responseWrapper.setResponseStatus(ResponseStatus.SUCCESS);
 		responseWrapper.setData(test);
 		return responseWrapper;		
@@ -128,7 +125,7 @@ public class TestsControllerAPI {
 	@ResponseBody
 	@JsonView(View.CompleteAPI.class)
 	@RequestMapping(value="/{id}", produces = "application/json", method = RequestMethod.POST)
-	public ResponseWrapper submitAnswer(@PathVariable long id, @RequestBody List<finki.ask.api.model.Answer> jsonAnswers, HttpServletRequest request, HttpServletResponse response) {
+	public ResponseWrapper postAnswer(@PathVariable long id, @RequestBody List<finki.ask.api.model.Answer> jsonAnswers, HttpServletRequest request, HttpServletResponse response) {
 		
 		Test test = testService.findById(id);
 		HttpSession session = request.getSession(false);
@@ -160,6 +157,16 @@ public class TestsControllerAPI {
 			Question question = questionService.findById(jsonAnswer.getQuestionId());
 			Answer answer = answerService.findById(jsonAnswer.getAnswerId());
 			
+			if (question == null) {
+				responseWrapper.setDescription("Question  does not exist.");
+				return responseWrapper;
+			}
+			
+			if (answer == null) {
+				responseWrapper.setDescription("Answer  does not exist.");
+				return responseWrapper;
+			}
+			
 			if (question == null || answer == null) {
 				responseWrapper.setDescription("Question or answer does not exist.");
 				return responseWrapper;
@@ -178,6 +185,7 @@ public class TestsControllerAPI {
 				studentAnswer = new StudentAnswer();
 				studentAnswer.setQuestion(question);
 				studentAnswer.setAnswer(answer);
+				studentAnswer.setTest(test);
 				studentAnswer.setTestInstance(testInstance);
 			}
 		
@@ -194,6 +202,8 @@ public class TestsControllerAPI {
 				}
 			}
 			else {
+				System.out.println(answer.isCorrect() + " --- " + jsonAnswer.isChecked());
+				
 				studentAnswer.setCorrect(answer.isCorrect() == jsonAnswer.isChecked());
 			}
 			
@@ -202,6 +212,13 @@ public class TestsControllerAPI {
 			
 		}
 		
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonAnswers));
+		}
+		catch (Exception e) {
+			System.err.println("Error u pm");
+		}
 		responseWrapper.setResponseStatus(ResponseStatus.SUCCESS);
 		return responseWrapper;
 	}
@@ -210,6 +227,8 @@ public class TestsControllerAPI {
 	@JsonView(View.Public.class)
 	@ExceptionHandler(Exception.class)
 	public ResponseWrapper exceptionHandler(Exception ex) {
+		System.err.println(ex.toString());
+		System.err.println(ex.getStackTrace());
 		ResponseWrapper responseWrapper = new ResponseWrapper();
 		responseWrapper.setResponseStatus(ResponseStatus.ERROR);
 		responseWrapper.setDescription(ex.toString());
