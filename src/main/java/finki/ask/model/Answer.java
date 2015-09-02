@@ -22,13 +22,10 @@ public class Answer extends BaseEntity {
 	private String text;
 	
 	@JsonView(View.CompleteAdmin.class)
-	private String textCorrect;
+	private String correct;
 	
 	@JsonView(View.CompleteAdmin.class)
-	private long rangeCorrect;
-	
-	@JsonView(View.CompleteAdmin.class)
-	private boolean isCorrect;
+	private boolean isChecked;
 
 	@NotNull
 	@ManyToOne
@@ -51,12 +48,20 @@ public class Answer extends BaseEntity {
 		this.text = text;
 	}
 
-	public boolean isCorrect() {
-		return isCorrect;
+	public String getCorrect() {
+		return correct;
 	}
 
-	public void setCorrect(boolean isCorrect) {
-		this.isCorrect = isCorrect;
+	public void setCorrect(String correct) {
+		this.correct = correct;
+	}
+
+	public boolean isChecked() {
+		return isChecked;
+	}
+
+	public void setChecked(boolean isChecked) {
+		this.isChecked = isChecked;
 	}
 
 	public Question getQuestion() {

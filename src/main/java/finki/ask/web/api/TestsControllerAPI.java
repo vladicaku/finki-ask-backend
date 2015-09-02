@@ -114,7 +114,7 @@ public class TestsControllerAPI {
 				responseWrapper.setDescription("The test is not active.");
 				return null;
 			}
-			// load already answerd questions		
+			// load already answered questions		
 		}
 		
 		responseWrapper.setResponseStatus(ResponseStatus.SUCCESS);
