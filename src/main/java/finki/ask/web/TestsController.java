@@ -162,43 +162,4 @@ public class TestsController {
 		request.getSession(true).setAttribute("userId", 0);
 	}
 
-	@RequestMapping(value = "/kreirajNovo", method = RequestMethod.GET)
-	@ResponseBody
-	public void createNew() {
-		Test test = new Test();
-		test.setName("Aktivan Nov test");
-		test.setType(TestType.SURVEY);
-		test.setDateCreated(new Date());
-		test.setStart(new Date());
-		test.setEnd(new Date(test.getStart().getTime() + 100 * 60000l));
-		test.setDuration(99);
-		test.setPassword("password123");
-		test.setOpen(true);
-		testService.save(test);
-
-		// User user = new User();
-		// user.setType(100);
-		// test.setCreator(user);
-
-		Question question = new Question();
-		question.setText("Kade se rodil Goce Delcev");
-		question.setType(QuestionType.SINGLE);
-		question.setTest(test);
-		question.setPoints(98765);
-		questionService.save(question);
-
-		Answer answer1 = new Answer();
-		answer1.setText("Kukus");
-		answer1.setCorrect(true);
-		answer1.setQuestion(question);
-		answerService.save(answer1);
-
-		Answer answer2 = new Answer();
-		answer2.setText("Negde drugde");
-		answer2.setCorrect(true);
-		answer2.setQuestion(question);
-		answerService.save(answer2);
-
-	}
-
 }

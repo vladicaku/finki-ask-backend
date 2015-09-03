@@ -195,16 +195,17 @@ public class TestsControllerAPI {
 					studentAnswer.setCorrect(false);
 				}
 				else {
-					String correctAnswer = answer.getText().trim().toLowerCase();
+					String correctAnswer = answer.getCorrect().trim().toLowerCase();
 					String newAnswer = jsonAnswer.getText().trim().toLowerCase();
 					studentAnswer.setCorrect(correctAnswer.equals(newAnswer));
 					studentAnswer.setText(jsonAnswer.getText());
 				}
 			}
-			else {
-				System.out.println(answer.isCorrect() + " --- " + jsonAnswer.isChecked());
-				
-				studentAnswer.setCorrect(answer.isCorrect() == jsonAnswer.isChecked());
+			else if (question.getType() == QuestionType.SINGLE || question.getType() == QuestionType.MULTIPLE) {
+				studentAnswer.setCorrect(answer.isChecked() == jsonAnswer.isChecked());
+			}
+			else if (question.getType() == QuestionType.RANGE) {
+				studentAnswer.setCorrect(answer.getCorrect().equals(jsonAnswer.getText()));
 			}
 			
 			// persist
