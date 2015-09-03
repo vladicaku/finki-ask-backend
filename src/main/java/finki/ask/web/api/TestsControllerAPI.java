@@ -218,7 +218,7 @@ public class TestsControllerAPI {
 			System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonAnswers));
 		}
 		catch (Exception e) {
-			System.err.println("Error u pm");
+			System.err.println("ObjectMapper Error");
 		}
 		responseWrapper.setResponseStatus(ResponseStatus.SUCCESS);
 		return responseWrapper;
