@@ -1,15 +1,13 @@
 package finki.ask.web;
 
-import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,16 +18,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import finki.ask.api.model.ResponseStatus;
 import finki.ask.api.model.ResponseWrapper;
 import finki.ask.model.Answer;
 import finki.ask.model.Question;
-import finki.ask.model.QuestionType;
 import finki.ask.model.Test;
-import finki.ask.model.TestType;
 import finki.ask.service.AnswerService;
 import finki.ask.service.QuestionService;
 import finki.ask.service.TestService;
@@ -78,6 +72,9 @@ public class TestsController {
 //			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 //			mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
 //			System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(test));
+			
+			System.out.println(test.getStart().toString());
+			System.out.println(test.getEnd().toString());
 			
 			for (Question q : test.getQuestions()) {
 				q.setTest(test);

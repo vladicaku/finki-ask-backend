@@ -54,13 +54,13 @@ public class Test extends BaseEntity {
 
 	@NotNull
 	@DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
-	@JsonFormat(pattern = "dd/MM/yyyy HH:mm")
+	@JsonFormat(pattern = "dd/MM/yyyy HH:mm", timezone="CET")
 	@JsonView(View.Public.class)
 	private Date start;
 
 	@NotNull
 	@DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
-	@JsonFormat(pattern = "dd/MM/yyyy HH:mm")
+	@JsonFormat(pattern = "dd/MM/yyyy HH:mm", timezone="CET")
 	@JsonView(View.Public.class)
 	private Date end;
 
