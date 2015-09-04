@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,9 +19,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import finki.ask.api.model.ResponseStatus;
+import finki.ask.api.model.ResponseWrapper;
 import finki.ask.model.Answer;
 import finki.ask.model.Question;
 import finki.ask.model.QuestionType;
@@ -29,6 +33,7 @@ import finki.ask.model.TestType;
 import finki.ask.service.AnswerService;
 import finki.ask.service.QuestionService;
 import finki.ask.service.TestService;
+import finki.ask.view.View;
 
 @CrossOrigin
 @RestController
@@ -64,44 +69,35 @@ public class TestsController {
 
 	@ResponseBody
 	@RequestMapping(consumes = "application/json", method = RequestMethod.POST)
-	public ResponseEntity<Test> create(@RequestBody Test test, HttpServletRequest request, HttpServletResponse response) {
+	public ResponseWrapper create(@RequestBody Test test, HttpServletRequest request, HttpServletResponse response) {
+		ResponseWrapper responseWrapper = new ResponseWrapper();
+		responseWrapper.setResponseStatus(ResponseStatus.ERROR);
+		
 		try {
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-			System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(test));
-			// long userId = getUserId(request);
-			// test.setCreator(userId);
-//			System.out.println("<<<<<<  " + test.getName());
-//			System.out.println("<<<<<<  " + test.getPassword());
-//			System.out.println("<<<<<<  " + test.getType().toString());
-//			System.out.println("<<<<<<  " + test.getStart().toString());
-
+//			ObjectMapper mapper = new ObjectMapper();
+//			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//			mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
+//			System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(test));
+			
 			for (Question q : test.getQuestions()) {
 				q.setTest(test);
 				for (Answer a : q.getAnswers()) {
 					a.setQuestion(q);
 				}
 			}
-
 			testService.save(test);
-//			for (Question q : test.getQuestions()) {
-//				q.setTest(test);
-//				questionService.save(q);
-//				for (Answer a : q.getAnswers()) {
-//					a.setQuestion(q);
-//					answerService.save(a);
-//				}
-//			}
-
 		} catch (Exception e) {
 			System.err.println(e.toString());
 			System.err.println(e.getStackTrace());
-			return new ResponseEntity<Test>(HttpStatus.BAD_REQUEST);
+			responseWrapper.setDescription(test.toString());
+			return responseWrapper;
 		}
 
-		return new ResponseEntity<Test>(HttpStatus.OK);
+		responseWrapper.setResponseStatus(ResponseStatus.SUCCESS);
+		return responseWrapper;
 	}
-	//
+	
+	
 	// @ResponseBody
 	// @RequestMapping(value = "/{id}", produces = "application/json", method =
 	// RequestMethod.GET)
@@ -143,23 +139,38 @@ public class TestsController {
 	//
 	// return new ResponseEntity<>(HttpStatus.OK);
 	// }
-
+	
+	
 	@ResponseBody
 	@RequestMapping(value = "/{id}", produces = "application/json", method = RequestMethod.DELETE)
-	public ResponseEntity<String> delete(@PathVariable long id, HttpServletResponse response) {
+	public ResponseWrapper delete(@PathVariable long id, HttpServletResponse response) {
+		ResponseWrapper responseWrapper = new ResponseWrapper();
+		
 		try {
 			testService.delete(id);
 		} catch (Exception ex) {
-			return new ResponseEntity<>(ex.toString(), HttpStatus.BAD_REQUEST);
+			responseWrapper.setResponseStatus(ResponseStatus.ERROR);
+			responseWrapper.setDescription(ex.toString());
+			System.err.println(e.toString());
+			System.err.println(ex.getStackTrace());
+			return responseWrapper;
 		}
 
-		return new ResponseEntity<>(HttpStatus.OK);
+		responseWrapper.setResponseStatus(ResponseStatus.SUCCESS);
+		return responseWrapper;
 	}
-
-	@RequestMapping(value = "/create-session", method = RequestMethod.GET)
+	
 	@ResponseBody
-	public void createSession(HttpServletRequest request) {
-		request.getSession(true).setAttribute("userId", 0);
+	@JsonView(View.Public.class)
+	@ExceptionHandler(Exception.class)
+	public ResponseWrapper exceptionHandler(Exception ex) {
+		System.err.println(ex.toString());
+		System.err.println(ex.getStackTrace());
+		ResponseWrapper responseWrapper = new ResponseWrapper();
+		responseWrapper.setResponseStatus(ResponseStatus.ERROR);
+		responseWrapper.setDescription(ex.toString());
+		//Arrays.toString(ex.getStackTrace());
+		return responseWrapper;
 	}
 
 }

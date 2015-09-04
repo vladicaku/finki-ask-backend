@@ -8,6 +8,8 @@ import javax.persistence.Transient;
 import org.hibernate.validator.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.sun.istack.NotNull;
 
@@ -17,7 +19,7 @@ import finki.ask.view.View;
 @Table(name = "answers")
 public class Answer extends BaseEntity {
 
-	@NotBlank
+	@NotNull
 	@JsonView(View.Public.class)
 	private String text;
 	
@@ -35,6 +37,7 @@ public class Answer extends BaseEntity {
 	// smartphone fix
 	@Transient
 	@JsonView(View.CompleteAPI.class)
+	//@JsonInclude(Include.NON_NULL)
 	private long questionId;
 
 	public Answer() {
