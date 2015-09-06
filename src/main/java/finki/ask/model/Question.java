@@ -4,6 +4,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -26,6 +27,7 @@ import finki.ask.view.View;
 public class Question extends BaseEntity {
 
 	@NotBlank
+	@Column(length = 1000)
 	@JsonView(View.Public.class)
 	private String text;
 
