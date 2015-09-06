@@ -9,6 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -45,6 +46,7 @@ public class Question extends BaseEntity {
 	@OneToMany(mappedBy = "question", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonDeserialize(as = LinkedHashSet.class)
 	@JsonView(View.Public.class)
+	@OrderBy(value="id")
 	private Set<Answer> answers;
 
 	public Question() {

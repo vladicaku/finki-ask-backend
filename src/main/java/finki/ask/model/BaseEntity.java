@@ -4,6 +4,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.OrderBy;
+import javax.persistence.OrderColumn;
+
+import org.springframework.core.annotation.Order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -11,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import finki.ask.view.View;
 
 @MappedSuperclass
-public class BaseEntity {
+public class BaseEntity implements Comparable<BaseEntity>{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,5 +48,10 @@ public class BaseEntity {
 	public int hashCode() {
 		return this.id != null ? (this.getClass() + "-" + this.id).hashCode()
 				: super.hashCode();
+	}
+	
+	@Override
+	public int compareTo(BaseEntity o) {
+		return id.compareTo(o.getId());
 	}
 }

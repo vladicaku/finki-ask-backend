@@ -102,11 +102,11 @@ public class TestsControllerAPI {
 			testInstance = new TestInstance();
 			testInstance.setTest(test);
 			testInstance.setStartTime(new Date());
-			testInstance.setEndTime(new Date(testInstance.getStartTime().getTime() + test.getDuration() * 60000l));
+			testInstance.setEndTime(new Date(testInstance.getStartTime().getTime() + test.getDuration() * 60000l + 60000l)); // one extra minute
 			testInstanceService.save(testInstance);
 			
 			session.setAttribute("testInstance", testInstance);
-			session.setMaxInactiveInterval(test.getDuration() * 60);
+			session.setMaxInactiveInterval(test.getDuration() * 60 + 60); // one extra minute
 		}
 		else {
 			Date now = new Date();
@@ -153,6 +153,18 @@ public class TestsControllerAPI {
 			return responseWrapper;
 		}
 		
+		String finish = request.getParameter("finish");
+		if (finish != null && finish.equals("true")) {
+			// TODO
+			// if test type is survey return how many questions are answered
+			// else, return percentage (points)
+			// show results
+			responseWrapper.setResponseStatus(ResponseStatus.RESULTS);
+			responseWrapper.setDescription("You have scored 1234 points out of 200.");
+			responseWrapper.setData(new Long(55));
+			return responseWrapper;
+		}
+		
 		for (finki.ask.api.model.Answer jsonAnswer : jsonAnswers) {
 			Question question = questionService.findById(jsonAnswer.getQuestionId());
 			Answer answer = answerService.findById(jsonAnswer.getAnswerId());
@@ -179,7 +191,7 @@ public class TestsControllerAPI {
 			}
 			
 			// try to load an existing answer if exist or create a new one if don't
-			StudentAnswer studentAnswer = studentAnswerService.findSpecific(testInstance, question, answer);
+			StudentAnswer studentAnswer = studentAnswerService.findSpecific(testInstance, test, question, answer);
 			
 			if (studentAnswer == null) {
 				studentAnswer = new StudentAnswer();
@@ -205,12 +217,13 @@ public class TestsControllerAPI {
 				studentAnswer.setCorrect(answer.isChecked() == jsonAnswer.isChecked());
 			}
 			else if (question.getType() == QuestionType.RANGE) {
-				studentAnswer.setCorrect(answer.getCorrect().equals(jsonAnswer.getText()));
+				studentAnswer.setText(jsonAnswer.getText());
+				String rangeCorrect = studentAnswer.getText().split(":")[2];
+				studentAnswer.setCorrect(answer.getCorrect().equals(rangeCorrect));
 			}
 			
 			// persist
 			studentAnswerService.save(studentAnswer);
-			
 		}
 		
 		try {
@@ -228,12 +241,16 @@ public class TestsControllerAPI {
 	@JsonView(View.Public.class)
 	@ExceptionHandler(Exception.class)
 	public ResponseWrapper exceptionHandler(Exception ex) {
-		System.err.println(ex.toString());
-		System.err.println(ex.getStackTrace());
 		ResponseWrapper responseWrapper = new ResponseWrapper();
 		responseWrapper.setResponseStatus(ResponseStatus.ERROR);
 		responseWrapper.setDescription(ex.toString());
-		//Arrays.toString(ex.getStackTrace());
+		System.err.println(ex.toString());
+		ex.printStackTrace();
+//		StringBuilder sb = new StringBuilder();
+//	    for (StackTraceElement element : ex.getStackTrace()) {
+//	        sb.append(element.toString());
+//	        sb.append("\n");
+//	    }		
 		return responseWrapper;
 	}
 }

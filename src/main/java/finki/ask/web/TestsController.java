@@ -49,33 +49,43 @@ public class TestsController {
 	}
 
 	@ResponseBody
+	@JsonView(View.SummaryAdmin.class)
 	@RequestMapping(produces = "application/json", method = RequestMethod.GET)
-	public List<Test> findAll(HttpServletRequest request) {
+	public ResponseWrapper findAll(HttpServletRequest request) {
+		ResponseWrapper responseWrapper = new ResponseWrapper();
+		responseWrapper.setResponseStatus(ResponseStatus.SUCCESS);
 		String name = request.getParameter("name");
-		long userId = getUserId(request);
+		//long userId = getUserId(request);
 
 		if (name == null) {
-			return testService.findForUser(userId);
+			//return testService.findForUser(userId);
+			responseWrapper.setData(testService.findAll());
 		} else {
-			return testService.findByNameForUser(name, userId);
+			//return testService.findByNameForUser(name, userId);
+			responseWrapper.setData(testService.findAll());
 		}
+		
+		return responseWrapper;
 	}
 
 	@ResponseBody
+	@JsonView(View.Public.class)
 	@RequestMapping(consumes = "application/json", method = RequestMethod.POST)
 	public ResponseWrapper create(@RequestBody Test test, HttpServletRequest request, HttpServletResponse response) {
 		ResponseWrapper responseWrapper = new ResponseWrapper();
 		responseWrapper.setResponseStatus(ResponseStatus.ERROR);
+		// TODO
+		// check if this test belongs to the logged user
 		
 		try {
-//			ObjectMapper mapper = new ObjectMapper();
-//			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-//			mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
-//			System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(test));
-			
-			System.out.println(test.getStart().toString());
-			System.out.println(test.getEnd().toString());
-			
+			/* This peace of code throws error
+			 * when some of the attributes (questionId) is null.
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+			mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
+			System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(test));
+			*/
+				
 			for (Question q : test.getQuestions()) {
 				q.setTest(test);
 				for (Answer a : q.getAnswers()) {
@@ -94,65 +104,79 @@ public class TestsController {
 		return responseWrapper;
 	}
 	
+	@ResponseBody
+	@JsonView(View.Public.class)
+	@RequestMapping(value = "/{id}", consumes = "application/json", method = RequestMethod.POST)
+	public ResponseWrapper update(@PathVariable long id, @RequestBody Test test) {
+		ResponseWrapper responseWrapper = new ResponseWrapper();
+		responseWrapper.setResponseStatus(ResponseStatus.SUCCESS);
+		
+		// TODO
+		// check if this test belongs to the logged user
+		
+		for (Question q : test.getQuestions()) {
+			q.setTest(test);
+			for (Answer a : q.getAnswers()) {
+				a.setQuestion(q);
+			}
+		}
+		testService.save(test);
+		
+		
+		return responseWrapper;
+	}
 	
-	// @ResponseBody
-	// @RequestMapping(value = "/{id}", produces = "application/json", method =
-	// RequestMethod.GET)
-	// public ResponseEntity<Test> findById(@PathVariable long id) {
-	// try {
-	// return new ResponseEntity<>(testService.findById(id), HttpStatus.OK);
-	// }
-	// catch (Exception ex) {
-	// return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-	// }
-	// }
-	//
+	@ResponseBody
+	@JsonView(View.CompleteAdmin.class)
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public ResponseWrapper findById(@PathVariable long id) {
+		ResponseWrapper responseWrapper = new ResponseWrapper();
+		responseWrapper.setResponseStatus(ResponseStatus.SUCCESS);
+		//findByNameForUser
+		Test test = testService.findById(id);
+		for (Question q : test.getQuestions()) {
+			System.out.println(q.getId());
+		}
+		responseWrapper.setData(test);
+		return responseWrapper;
+	}
+
 	// @ResponseBody
 	// @RequestMapping(value = "/{id}", produces = "application/json", method =
 	// RequestMethod.PUT)
-	// public ResponseEntity<String> update(@RequestBody Test test,
-	// @PathVariable long id, HttpServletRequest request, HttpServletResponse
-	// response) {
-	// try{
-	// Test originalTest = testService.findById(id);
-	// long userId = getUserId(request);
-	//
-	// if (originalTest.getCreator() != userId) {
-	// return new ResponseEntity<>("You are not allowed to edit this item.",
-	// HttpStatus.UNAUTHORIZED);
-	// }
-	//
-	// if (id != test.getId()) {
-	// return new ResponseEntity<>("Wrong url identifie.",
-	// HttpStatus.BAD_REQUEST);
-	// }
-	//
-	// test.setCreator(userId);
-	// testService.save(test);
-	// }
-	// catch (Exception e) {
-	// return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
-	// }
-	//
-	// return new ResponseEntity<>(HttpStatus.OK);
-	// }
+//	 public ResponseEntity<String> update(@RequestBody Test test,
+//	 @PathVariable long id, HttpServletRequest request, HttpServletResponse
+//	 response) {
+//	 try{
+//	 Test originalTest = testService.findById(id);
+//	 long userId = getUserId(request);
+//	
+//	 if (originalTest.getCreator() != userId) {
+//	 return new ResponseEntity<>("You are not allowed to edit this item.",
+//	 HttpStatus.UNAUTHORIZED);
+//	 }
+//	
+//	 if (id != test.getId()) {
+//	 return new ResponseEntity<>("Wrong url identifie.",
+//	 HttpStatus.BAD_REQUEST);
+//	 }
+//	
+//	 test.setCreator(userId);
+//	 testService.save(test);
+//	 }
+//	 catch (Exception e) {
+//	 return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
+//	 }
+//	
+//	 return new ResponseEntity<>(HttpStatus.OK);
+//	 }
 	
 	
 	@ResponseBody
 	@RequestMapping(value = "/{id}", produces = "application/json", method = RequestMethod.DELETE)
 	public ResponseWrapper delete(@PathVariable long id, HttpServletResponse response) {
 		ResponseWrapper responseWrapper = new ResponseWrapper();
-		
-		try {
-			testService.delete(id);
-		} catch (Exception ex) {
-			responseWrapper.setResponseStatus(ResponseStatus.ERROR);
-			responseWrapper.setDescription(ex.toString());
-			System.err.println(e.toString());
-			System.err.println(ex.getStackTrace());
-			return responseWrapper;
-		}
-
+		testService.delete(id);
 		responseWrapper.setResponseStatus(ResponseStatus.SUCCESS);
 		return responseWrapper;
 	}
@@ -161,12 +185,16 @@ public class TestsController {
 	@JsonView(View.Public.class)
 	@ExceptionHandler(Exception.class)
 	public ResponseWrapper exceptionHandler(Exception ex) {
-		System.err.println(ex.toString());
-		System.err.println(ex.getStackTrace());
 		ResponseWrapper responseWrapper = new ResponseWrapper();
 		responseWrapper.setResponseStatus(ResponseStatus.ERROR);
 		responseWrapper.setDescription(ex.toString());
-		//Arrays.toString(ex.getStackTrace());
+		System.err.println(ex.toString());
+		ex.printStackTrace();
+//		StringBuilder sb = new StringBuilder();
+//	    for (StackTraceElement element : ex.getStackTrace()) {
+//	        sb.append(element.toString());
+//	        sb.append("\n");
+//	    }		
 		return responseWrapper;
 	}
 

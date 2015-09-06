@@ -3,6 +3,7 @@ package finki.ask.model;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.SortedSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,6 +12,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -80,6 +83,7 @@ public class Test extends BaseEntity {
 	@OneToMany(mappedBy = "test", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonDeserialize(as = LinkedHashSet.class)
 	@JsonView(View.CompleteAPI.class)
+	@OrderBy(value="id")
 	private Set<Question> questions;
 
 	public Test() {

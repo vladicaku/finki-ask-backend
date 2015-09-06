@@ -13,6 +13,9 @@ import javax.validation.constraints.NotNull;
 @Table(name = "test_instances")
 public class TestInstance extends BaseEntity {
 	
+	// TODO
+	// check date for timezone errors 
+	
 	@NotNull
 	@ManyToOne
 	private Test test;
