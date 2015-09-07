@@ -105,7 +105,8 @@ public class TestsControllerAPI {
 		
 		findByIdValidator(test, password);
 		
-		if (testInstance == null || !testInstance.getTest().equals(test)) {
+		//if (testInstance == null || !testInstance.getTest().equals(test)) {
+		
 			testInstance = new TestInstance();
 			testInstance.setTest(test);
 			testInstance.setStartTime(new Date());
@@ -116,14 +117,14 @@ public class TestsControllerAPI {
 			// create new session
 			session.setAttribute("testInstance", testInstance);
 			session.setMaxInactiveInterval(test.getDuration() * 60 + 60); // one extra minute
-		}
-		else {
-			Date now = new Date();
-			if (now.compareTo(test.getEnd()) == 1) {
-				throw new Exception("The test is not active.");
-			}
-			// load already answered questions		
-		}
+		//}
+//		else {
+//			Date now = new Date();
+//			if (now.compareTo(test.getEnd()) == 1) {
+//				throw new Exception("The test is not active.");
+//			}
+//			// load already answered questions		
+//		}
 		
 		responseWrapper.setResponseStatus(ResponseStatus.SUCCESS);
 		responseWrapper.setData(test);
@@ -171,9 +172,9 @@ public class TestsControllerAPI {
 			}
 			else {
 				double myPoints = resultService.sumPoints(testInstance, test);
-				responseWrapper.setData(new Integer((int) (myPoints / test.getTotalPoints())));
-				responseWrapper.setDescription(String.format("You have scored %f of total $d points. Answred %d / %d. ", myPoints, test.getTotalPoints(), totalQuestionAnswred, totalQuestions));
-				
+				double totalPoints = test.getTotalPoints();
+				responseWrapper.setData(new Integer(Math.min((int) (myPoints / totalPoints * 100), 100)));
+				responseWrapper.setDescription(String.format("You have scored %.0f of total %d points. Answred %d / %d. ", myPoints, test.getTotalPoints(), totalQuestionAnswred, totalQuestions));
 			}
 			
 			return responseWrapper;
@@ -192,11 +193,13 @@ public class TestsControllerAPI {
 			totalCorrect = question.getType() == QuestionType.MULTIPLE ? 0 : 1;
 			
 			if (result == null) {
+				System.out.println(">>>>>>>>>>>>>>> NEW");
 				result = new Result();
 				result.setTest(test);
 				result.setQuestion(question);
 				result.setTestInstance(testInstance);
 				result.setTotalCorrect(totalCorrect);
+				//result = resultService.save(result);
 			}
 		}
 		

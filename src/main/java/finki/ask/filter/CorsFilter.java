@@ -19,8 +19,8 @@ public class CorsFilter implements Filter {
 			throws IOException, ServletException {
 		HttpServletResponse response = (HttpServletResponse) res;
 		//response.setHeader("Access-Control-Allow-Origin", "*");
-		response.setHeader("Access-Control-Allow-Origin", "http://192.168.1.124, 192.168.1.124, http://192.168.1.124:8090, 192.168.1.124:8090");
-		//response.setHeader("Access-Control-Allow-Origin", "http://192.168.0.109, 192.168.1.124, http://192.168.0.109:8090, 192.168.0.109:8090, http://192.168.0.107:80, 192.168.0.107:80, 192.168.0.107");
+		//response.setHeader("Access-Control-Allow-Origin", "http://192.168.1.124, 192.168.1.124, http://192.168.1.124:8090, 192.168.1.124:8090");
+		response.setHeader("Access-Control-Allow-Origin", "http://192.168.0.109, 192.168.1.124, http://192.168.0.109:8090, 192.168.0.109:8090, http://192.168.0.107:80, 192.168.0.107:80, 192.168.0.107");
 	    response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTION, OPTIONS, DELETE");
 	    response.setHeader("Access-Control-Max-Age", "3600");
 	    response.setHeader("Access-Control-Allow-Headers", "X-Requested-With, Origin, Content-Type, Accept, x-auth-token, x-requested-with");

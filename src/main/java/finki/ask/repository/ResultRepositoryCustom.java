@@ -2,12 +2,15 @@ package finki.ask.repository;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import finki.ask.model.Question;
 import finki.ask.model.Result;
 import finki.ask.model.StudentAnswer;
 import finki.ask.model.Test;
 import finki.ask.model.TestInstance;
 
+@Transactional
 public interface ResultRepositoryCustom {
 	public List<Result> findAllSpecific(Test test);
 	public List<Result> findAllSpecific(Test test, Question question);

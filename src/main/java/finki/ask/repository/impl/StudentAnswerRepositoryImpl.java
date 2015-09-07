@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
 import finki.ask.model.Answer;
 import finki.ask.model.Question;
@@ -12,6 +13,7 @@ import finki.ask.model.Test;
 import finki.ask.model.TestInstance;
 import finki.ask.repository.StudentAnswerRepositoryCustom;
 
+@Transactional
 public class StudentAnswerRepositoryImpl implements StudentAnswerRepositoryCustom{
 	
 	@PersistenceContext

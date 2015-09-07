@@ -3,9 +3,12 @@ package finki.ask.service;
 import java.util.List;
 import java.util.UUID;
 
+import javax.transaction.Transactional;
+
 import finki.ask.model.Test;
 import finki.ask.model.TestInstance;
 
+@Transactional
 public interface TestInstanceService {
 	
 	public TestInstance save(TestInstance testInstance);

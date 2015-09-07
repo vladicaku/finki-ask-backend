@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
 import finki.ask.model.Answer;
 import finki.ask.model.Question;
@@ -13,6 +14,7 @@ import finki.ask.model.Test;
 import finki.ask.model.TestInstance;
 import finki.ask.repository.ResultRepositoryCustom;
 
+@Transactional
 public class ResultRepositoryImpl implements ResultRepositoryCustom{
 
 	@PersistenceContext
@@ -49,8 +51,13 @@ public class ResultRepositoryImpl implements ResultRepositoryCustom{
 	
 	@Override
 	public double sumPoints(TestInstance testInstance, Test test) {
-		return (double) entityManager.createQuery("select sum(r.points) from Result r where r.testInstance = :testInstance and r.test = :test")
-				.setParameter("testInstance", testInstance).setParameter("test", test).getSingleResult();
+		try {
+			return (double) entityManager.createQuery("select SUM(r.totalPoints) from Result r where r.testInstance = :testInstance and r.test = :test")
+					.setParameter("testInstance", testInstance).setParameter("test", test).getSingleResult();
+		}
+		catch (Exception ex) {
+			return 0;
+		}
 	}
 
 }

@@ -2,8 +2,11 @@ package finki.ask.service;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import finki.ask.model.Answer;
 
+@Transactional
 public interface AnswerService {
 	
 	public Answer save(Answer answer);

@@ -4,10 +4,12 @@ import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
 import finki.ask.model.TestInstance;
 import finki.ask.repository.TestInstanceRepositoryCustom;
 
+@Transactional
 public class TestInstanceRepositoryImpl implements TestInstanceRepositoryCustom{
 	
 	@PersistenceContext
