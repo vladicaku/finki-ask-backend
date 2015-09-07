@@ -25,6 +25,8 @@ public interface ResultService {
 	
 	public Result findById(long id);
 	
+	public double sumPoints(TestInstance testInstance, Test test);
+	
 	public void delete(long id);
 	
 }

@@ -68,6 +68,11 @@ public class ResultServiceImpl implements ResultService{
 	public Result findById(long id) {
 		return resultRepository.findOne(id);
 	}
+	
+	@Override
+	public double sumPoints(TestInstance testInstance, Test test) {
+		return resultRepository.sumPoints(testInstance, test);
+	}
 
 	@Override
 	public void delete(long id) {

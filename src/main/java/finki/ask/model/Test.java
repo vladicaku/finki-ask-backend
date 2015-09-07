@@ -85,6 +85,9 @@ public class Test extends BaseEntity {
 	@JsonView(View.CompleteAPI.class)
 	@OrderBy(value="id")
 	private Set<Question> questions;
+	
+	@JsonView(View.Public.class)
+	private int totalPoints;
 
 	public Test() {
 	}
@@ -179,5 +182,13 @@ public class Test extends BaseEntity {
 
 	public void setOpen(boolean isPublic) {
 		this.isPublic = isPublic;
+	}
+
+	public int getTotalPoints() {
+		return totalPoints;
+	}
+
+	public void setTotalPoints(int totalPoints) {
+		this.totalPoints = totalPoints;
 	}
 }

@@ -46,5 +46,11 @@ public class ResultRepositoryImpl implements ResultRepositoryCustom{
 			return null;
 		}
 	}
+	
+	@Override
+	public double sumPoints(TestInstance testInstance, Test test) {
+		return (double) entityManager.createQuery("select sum(r.points) from Result r where r.testInstance = :testInstance and r.test = :test")
+				.setParameter("testInstance", testInstance).setParameter("test", test).getSingleResult();
+	}
 
 }

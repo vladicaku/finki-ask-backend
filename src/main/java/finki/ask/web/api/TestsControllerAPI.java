@@ -80,10 +80,21 @@ public class TestsControllerAPI {
 		}
 	}
 	
+	private void findByIdValidator(Test test, String password) throws Exception {
+		if (test == null) {
+			throw new Exception("No such test.");
+		}
+		
+		if (password == null || !test.getPassword().equals(password)) {
+			throw new Exception("Wrong password.");
+		}
+		
+	}
+	
 	@ResponseBody
 	@JsonView(View.CompleteAPI.class)
 	@RequestMapping(value="/{id}", produces = "application/json", method = RequestMethod.GET)
-	public ResponseWrapper findById(@PathVariable long id, HttpServletRequest request, HttpServletResponse response) {
+	public ResponseWrapper findById(@PathVariable long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		ResponseWrapper responseWrapper = new ResponseWrapper();
 		responseWrapper.setResponseStatus(ResponseStatus.ERROR);
@@ -93,15 +104,7 @@ public class TestsControllerAPI {
 		TestInstance testInstance = (TestInstance) session.getAttribute("testInstance");
 		String password = request.getParameter("password");
 		
-		if (test == null) {
-			responseWrapper.setDescription("No such test.");
-			return responseWrapper;
-		}
-		
-		if (!test.getPassword().equals(password)) {
-			responseWrapper.setDescription("Wrong password.");
-			return responseWrapper;
-		}
+		findByIdValidator(test, password);
 		
 		if (testInstance == null || !testInstance.getTest().equals(test)) {
 			testInstance = new TestInstance();
@@ -160,20 +163,21 @@ public class TestsControllerAPI {
 		
 		String finish = request.getParameter("finish");
 		if (finish != null && finish.equals("true")) {
-			// TODO
-			// if test type is survey return how many questions are answered
-			// else, return percentage (points)
-			// show results
 			responseWrapper.setResponseStatus(ResponseStatus.RESULTS);
+			int totalQuestions = test.getQuestions().size();
+			// TODO
+			// agregate this call
+			int totalQuestionAnswred = resultService.findAllSpecific(testInstance, test).size(); // 
 			
 			if (test.getType() == TestType.SURVEY) {
-				int totalQuestions = test.getQuestions().size();
-				int totalQuestionAnswred = resultService.findAllSpecific(testInstance, test).size();
 				responseWrapper.setData(new Integer(totalQuestionAnswred / totalQuestions));
+				responseWrapper.setDescription("Thank you for completing our survey.");
 			}
 			else {
-				// calculate points
-				// set description 
+				double myPoints = resultService.sumPoints(testInstance, test);
+				responseWrapper.setData(new Integer((int) (myPoints / test.getTotalPoints())));
+				responseWrapper.setDescription(String.format("You have scored %f of total $d points. Answred %d / %d. ", myPoints, test.getTotalPoints(), totalQuestionAnswred, totalQuestions));
+				
 			}
 			
 			return responseWrapper;
