@@ -85,13 +85,15 @@ public class TestsController {
 			mapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
 			System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(test));
 			*/
-				
+			int totalPoints = 0;
 			for (Question q : test.getQuestions()) {
 				q.setTest(test);
+				totalPoints += q.getPoints();
 				for (Answer a : q.getAnswers()) {
 					a.setQuestion(q);
 				}
 			}
+			test.setTotalPoints(totalPoints);
 			testService.save(test);
 		} catch (Exception e) {
 			System.err.println(e.toString());
@@ -113,15 +115,16 @@ public class TestsController {
 		
 		// TODO
 		// check if this test belongs to the logged user
-		
+		int totalPoints = 0;
 		for (Question q : test.getQuestions()) {
 			q.setTest(test);
+			totalPoints += q.getPoints();
 			for (Answer a : q.getAnswers()) {
 				a.setQuestion(q);
 			}
 		}
+		test.setTotalPoints(totalPoints);
 		testService.save(test);
-		
 		
 		return responseWrapper;
 	}

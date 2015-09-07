@@ -97,8 +97,7 @@ public class TestsControllerAPI {
 	public ResponseWrapper findById(@PathVariable long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		ResponseWrapper responseWrapper = new ResponseWrapper();
-		responseWrapper.setResponseStatus(ResponseStatus.ERROR);
-		
+
 		Test test = testService.findByIdActive(id);
 		HttpSession session = request.getSession(true);
 		TestInstance testInstance = (TestInstance) session.getAttribute("testInstance");
@@ -113,14 +112,15 @@ public class TestsControllerAPI {
 			testInstance.setEndTime(new Date(testInstance.getStartTime().getTime() + test.getDuration() * 60000l + 60000l)); // one extra minute
 			testInstanceService.save(testInstance);
 			
+			// TODO
+			// create new session
 			session.setAttribute("testInstance", testInstance);
 			session.setMaxInactiveInterval(test.getDuration() * 60 + 60); // one extra minute
 		}
 		else {
 			Date now = new Date();
 			if (now.compareTo(test.getEnd()) == 1) {
-				responseWrapper.setDescription("The test is not active.");
-				return null;
+				throw new Exception("The test is not active.");
 			}
 			// load already answered questions		
 		}
@@ -133,17 +133,15 @@ public class TestsControllerAPI {
 	@ResponseBody
 	@JsonView(View.CompleteAPI.class)
 	@RequestMapping(value="/{id}", produces = "application/json", method = RequestMethod.POST)
-	public ResponseWrapper postAnswer(@PathVariable long id, @RequestBody List<finki.ask.api.model.Answer> jsonAnswers, HttpServletRequest request, HttpServletResponse response) {
+	public ResponseWrapper postAnswer(@PathVariable long id, @RequestBody List<finki.ask.api.model.Answer> jsonAnswers, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		Test test = testService.findById(id);
 		HttpSession session = request.getSession(false);
 		ResponseWrapper responseWrapper = new ResponseWrapper();
-		responseWrapper.setResponseStatus(ResponseStatus.ERROR);
 		
 		// validate session
 		if (session == null) {
-			responseWrapper.setDescription("Session does not exist.");
-			return responseWrapper;
+			throw new Exception("Session does not exist.");
 		}
 		
 		// validate date
@@ -151,14 +149,12 @@ public class TestsControllerAPI {
 		Date now = new Date();
 		if (now.compareTo(test.getEnd()) == 1) {
 			session.invalidate();
-			responseWrapper.setDescription("Your time has expired.");
-			return responseWrapper;
+			throw new Exception("Your time has expired.");
 		}
 		
 		// wrong test, testInstance is not opened for this test
 		if (id != testInstance.getTest().getId()) {
-			responseWrapper.setDescription("You do not have permission to access this page.");
-			return responseWrapper;
+			throw new Exception("You do not have permission to access this page.");
 		}
 		
 		String finish = request.getParameter("finish");
