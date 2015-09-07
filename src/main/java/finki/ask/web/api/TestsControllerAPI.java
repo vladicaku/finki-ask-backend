@@ -165,8 +165,17 @@ public class TestsControllerAPI {
 			// else, return percentage (points)
 			// show results
 			responseWrapper.setResponseStatus(ResponseStatus.RESULTS);
-			responseWrapper.setDescription("You have scored 1234 points out of 200.");
-			responseWrapper.setData(new Long(55));
+			
+			if (test.getType() == TestType.SURVEY) {
+				int totalQuestions = test.getQuestions().size();
+				int totalQuestionAnswred = resultService.findAllSpecific(testInstance, test).size();
+				responseWrapper.setData(new Integer(totalQuestionAnswred / totalQuestions));
+			}
+			else {
+				// calculate points
+				// set description 
+			}
+			
 			return responseWrapper;
 		}
 		
