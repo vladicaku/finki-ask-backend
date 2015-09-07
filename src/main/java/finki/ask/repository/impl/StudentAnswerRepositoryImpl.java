@@ -39,5 +39,17 @@ public class StudentAnswerRepositoryImpl implements StudentAnswerRepositoryCusto
 		return entityManager.createQuery("select sa from StudentAnswer sa where sa.testInstance = :testInstance and sa.test = test and sa,question = question")
 				.setParameter("testInstance", testInstance).setParameter("test", test).setParameter("question", question).getResultList();
 	}
+	
+	@Override
+	public List<StudentAnswer> findAllSpecific(Test test) {
+		return entityManager.createQuery("select sa from StudentAnswer sa where sa.test = test")
+				.setParameter("test", test).getResultList();
+	}
+	
+	@Override
+	public List<StudentAnswer> findAllSpecific(Test test, Question question) {
+		return entityManager.createQuery("select sa from StudentAnswer sa where sa.test = test and sa,question = question")
+			.setParameter("test", test).setParameter("question", question).getResultList();
+	}
 
 }

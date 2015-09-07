@@ -20,6 +20,10 @@ public interface StudentAnswerService {
 	
 	public List<StudentAnswer> findAllSpecific(TestInstance testInstance, Test test, Question question);
 	
+	public List<StudentAnswer> findAllSpecific(Test test);
+	
+	public List<StudentAnswer> findAllSpecific(Test test, Question question);
+	
 	public StudentAnswer findById(long id);
 	
 	public void delete(long id);

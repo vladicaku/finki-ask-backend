@@ -50,6 +50,16 @@ public class StudentAnswerServiceImpl implements StudentAnswerService{
 	}
 	
 	@Override
+	public List<StudentAnswer> findAllSpecific(Test test) {
+		return studentAnswerRepository.findAllSpecific(test);
+	}
+	
+	@Override
+	public List<StudentAnswer> findAllSpecific(Test test, Question question) {
+		return studentAnswerRepository.findAllSpecific(test, question);
+	}
+	
+	@Override
 	public void delete(long id) {
 		studentAnswerRepository.delete(id);
 	}

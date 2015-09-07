@@ -12,4 +12,6 @@ public interface StudentAnswerRepositoryCustom {
 	public StudentAnswer findSpecific(TestInstance testInstance, Test test, Question question, Answer answer);
 	public List<StudentAnswer> findAllSpecific(TestInstance testInstance, Test test);
 	public List<StudentAnswer> findAllSpecific(TestInstance testInstance, Test test, Question question);
+	public List<StudentAnswer> findAllSpecific(Test test);
+	public List<StudentAnswer> findAllSpecific(Test test, Question question);
 }

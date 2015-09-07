@@ -26,12 +26,14 @@ import finki.ask.api.model.ResponseWrapper;
 import finki.ask.model.Answer;
 import finki.ask.model.Question;
 import finki.ask.model.QuestionType;
+import finki.ask.model.Result;
 import finki.ask.model.StudentAnswer;
 import finki.ask.model.Test;
 import finki.ask.model.TestInstance;
 import finki.ask.model.TestType;
 import finki.ask.service.AnswerService;
 import finki.ask.service.QuestionService;
+import finki.ask.service.ResultService;
 import finki.ask.service.StudentAnswerService;
 import finki.ask.service.TestInstanceService;
 import finki.ask.service.TestService;
@@ -56,6 +58,9 @@ public class TestsControllerAPI {
 	
 	@Autowired
 	private TestInstanceService testInstanceService;
+	
+	@Autowired
+	private ResultService resultService;
 	
 	@ResponseBody
 	@JsonView(View.SummaryAPI.class)
@@ -165,8 +170,29 @@ public class TestsControllerAPI {
 			return responseWrapper;
 		}
 		
+		
+		Result result = null;
+		Question question = null;
+		long totalCorrect = 1;
+		long answeredCorrect = 0;
+		long totalPoints = 0;
+		
+		if (jsonAnswers.size() != 0) {
+			question = questionService.findById(jsonAnswers.get(0).getQuestionId());
+			result = resultService.findSpecific(testInstance, test, question);
+			totalCorrect = question.getType() == QuestionType.MULTIPLE ? 0 : 1;
+			
+			if (result == null) {
+				result = new Result();
+				result.setTest(test);
+				result.setQuestion(question);
+				result.setTestInstance(testInstance);
+				result.setTotalCorrect(totalCorrect);
+			}
+		}
+		
 		for (finki.ask.api.model.Answer jsonAnswer : jsonAnswers) {
-			Question question = questionService.findById(jsonAnswer.getQuestionId());
+			//Question question = questionService.findById(jsonAnswer.getQuestionId());
 			Answer answer = answerService.findById(jsonAnswer.getAnswerId());
 			
 			if (question == null) {
@@ -188,6 +214,11 @@ public class TestsControllerAPI {
 			if (!answer.getQuestion().equals(question) || !question.getTest().equals(test)) {
 				responseWrapper.setDescription("Invalid question or answer.");
 				return responseWrapper;
+			}
+			
+			// count total correct for type Multiple for the result
+			if (question.getType() == QuestionType.MULTIPLE && answer.isChecked()) {
+				totalCorrect++;
 			}
 			
 			// try to load an existing answer if exist or create a new one if don't
@@ -222,9 +253,32 @@ public class TestsControllerAPI {
 				studentAnswer.setCorrect(answer.getCorrect().equals(rangeCorrect));
 			}
 			
-			// persist
+			// persist answer
 			studentAnswerService.save(studentAnswer);
+			
+			// count answered correct for the result
+			if (studentAnswer.isCorrect() && (question.getType() == QuestionType.TEXT || question.getType() == QuestionType.RANGE)) {
+				answeredCorrect++;
+			}
+			else if (!studentAnswer.isCorrect() && (question.getType() == QuestionType.TEXT || question.getType() == QuestionType.RANGE)) {
+				answeredCorrect--;
+			}
+			else if (studentAnswer.isCorrect() && answer.isChecked()) {
+				answeredCorrect++;
+			}
+			else if (!studentAnswer.isCorrect() && !answer.isChecked()){
+				answeredCorrect--;
+			}
 		}
+		
+		// calculate correct out of total correct
+		// calculate points 
+		result.setTotalCorrect(totalCorrect);
+		result.setAnsweredCorrect(answeredCorrect < 0 ? 0 : answeredCorrect);
+		result.setTotalPoints(result.getAnsweredCorrect() * 1.0 / result.getTotalCorrect() * question.getPoints());
+
+		// persist result
+		resultService.save(result);
 		
 		try {
 			ObjectMapper mapper = new ObjectMapper();
@@ -233,6 +287,7 @@ public class TestsControllerAPI {
 		catch (Exception e) {
 			System.err.println("ObjectMapper Error");
 		}
+		
 		responseWrapper.setResponseStatus(ResponseStatus.SUCCESS);
 		return responseWrapper;
 	}
