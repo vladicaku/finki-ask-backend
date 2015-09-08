@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import finki.ask.model.TestInstance;
 
 
-@Transactional(isolation=Isolation.READ_COMMITTED)
 public interface TestInstanceRepositoryCustom {
 	public TestInstance findByUUID(UUID uuid);
 	public TestInstance findByIdAndUUID(long id, UUID uuid);

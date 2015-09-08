@@ -9,15 +9,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 import finki.ask.model.TestInstance;
 
-
-@Transactional(isolation=Isolation.READ_COMMITTED)
 public interface TestInstanceRepository extends JpaRepository<TestInstance, Long>, TestInstanceRepositoryCustom {
-	
-	@Override
-	@Lock(LockModeType.PESSIMISTIC_WRITE)
-	TestInstance findOne(Long arg0);
-	
-	@Override
-	@Lock(LockModeType.PESSIMISTIC_WRITE)
-	<S extends TestInstance> S save(S arg0);
 }

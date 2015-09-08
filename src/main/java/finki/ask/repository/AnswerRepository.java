@@ -6,6 +6,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 import finki.ask.model.Answer;
 
-@Transactional()
 public interface AnswerRepository extends JpaRepository<Answer, Long>{
 }

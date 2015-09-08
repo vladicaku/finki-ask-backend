@@ -13,7 +13,6 @@ import finki.ask.model.Result;
 import finki.ask.model.Test;
 import finki.ask.model.TestInstance;
 
-@Transactional(isolation=Isolation.REPEATABLE_READ)
 public interface ResultRepositoryCustom {
 	
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
@@ -30,4 +29,8 @@ public interface ResultRepositoryCustom {
 	
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	public double sumPoints(TestInstance testInstance, Test test);
+	
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	public Result findSpecificOrCreateIfNotExist(TestInstance testInstance, Test test, Question question);
+	
 }

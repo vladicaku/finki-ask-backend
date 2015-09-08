@@ -70,6 +70,11 @@ public class ResultServiceImpl implements ResultService{
 	}
 	
 	@Override
+	public Result findSpecificOrCreateIfNotExist(TestInstance testInstance, Test test, Question question) {
+		return resultRepository.findSpecificOrCreateIfNotExist(testInstance, test, question);
+	}
+	
+	@Override
 	public double sumPoints(TestInstance testInstance, Test test) {
 		return resultRepository.sumPoints(testInstance, test);
 	}

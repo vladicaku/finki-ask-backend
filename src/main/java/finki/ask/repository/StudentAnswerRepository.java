@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import finki.ask.model.StudentAnswer;
 
-@Transactional(isolation=Isolation.READ_COMMITTED)
 public interface StudentAnswerRepository extends JpaRepository<StudentAnswer, Long>, StudentAnswerRepositoryCustom{
 
 	@Override
@@ -25,4 +24,5 @@ public interface StudentAnswerRepository extends JpaRepository<StudentAnswer, Lo
 	@Override
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	<S extends StudentAnswer> S save(S arg0);
+	
 }

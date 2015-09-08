@@ -3,12 +3,13 @@ package finki.ask.service;
 import java.util.List;
 import java.util.UUID;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import finki.ask.model.Test;
 import finki.ask.model.TestInstance;
 
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
 public interface TestInstanceService {
 	
 	public TestInstance save(TestInstance testInstance);

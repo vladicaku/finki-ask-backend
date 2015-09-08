@@ -2,7 +2,9 @@ package finki.ask.service;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import finki.ask.model.Answer;
 import finki.ask.model.Question;
@@ -10,7 +12,7 @@ import finki.ask.model.StudentAnswer;
 import finki.ask.model.Test;
 import finki.ask.model.TestInstance;
 
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_UNCOMMITTED)
 public interface StudentAnswerService {
 	
 	public StudentAnswer save(StudentAnswer studentAnswer);

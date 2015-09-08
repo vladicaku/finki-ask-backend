@@ -4,8 +4,11 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+
+import org.springframework.data.jpa.repository.Lock;
 
 import finki.ask.model.Question;
 import finki.ask.model.Result;
@@ -13,7 +16,6 @@ import finki.ask.model.Test;
 import finki.ask.model.TestInstance;
 import finki.ask.repository.ResultRepositoryCustom;
 
-@Transactional
 public class ResultRepositoryImpl implements ResultRepositoryCustom{
 
 	@PersistenceContext
@@ -56,6 +58,24 @@ public class ResultRepositoryImpl implements ResultRepositoryCustom{
 		}
 		catch (Exception ex) {
 			return 0;
+		}
+	}
+	
+	@Override
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	public Result findSpecificOrCreateIfNotExist(TestInstance testInstance, Test test, Question question) {
+		try {
+			return (Result) entityManager.createQuery("select r from Result r where r.testInstance = :testInstance and r.test = :test and r.question = :question")
+					.setParameter("test", test).setParameter("testInstance", testInstance).setParameter("question", question).getSingleResult();
+		}
+		catch (Exception ex) {
+			Result result = new Result();
+			result.setTestInstance(testInstance);
+			result.setTest(test);
+			result.setQuestion(question);
+			entityManager.merge(result);
+			return (Result) entityManager.createQuery("select r from Result r where r.testInstance = :testInstance and r.test = :test and r.question = :question")
+					.setParameter("test", test).setParameter("testInstance", testInstance).setParameter("question", question).getSingleResult();
 		}
 	}
 

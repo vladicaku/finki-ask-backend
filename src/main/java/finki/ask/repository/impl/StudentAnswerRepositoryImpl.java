@@ -13,7 +13,6 @@ import finki.ask.model.Test;
 import finki.ask.model.TestInstance;
 import finki.ask.repository.StudentAnswerRepositoryCustom;
 
-@Transactional
 public class StudentAnswerRepositoryImpl implements StudentAnswerRepositoryCustom{
 	
 	@PersistenceContext

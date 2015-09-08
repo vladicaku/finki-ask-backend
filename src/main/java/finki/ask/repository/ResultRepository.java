@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import finki.ask.model.Result;
 
-@Transactional(isolation=Isolation.REPEATABLE_READ)
 public interface ResultRepository extends JpaRepository<Result, Long>, ResultRepositoryCustom{
 	
 	@Override
@@ -25,4 +24,5 @@ public interface ResultRepository extends JpaRepository<Result, Long>, ResultRep
 	@Override
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	<S extends Result> S save(S arg0);
+	
 }

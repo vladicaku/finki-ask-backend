@@ -9,7 +9,6 @@ import javax.transaction.Transactional;
 import finki.ask.model.TestInstance;
 import finki.ask.repository.TestInstanceRepositoryCustom;
 
-@Transactional
 public class TestInstanceRepositoryImpl implements TestInstanceRepositoryCustom{
 	
 	@PersistenceContext

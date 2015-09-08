@@ -15,7 +15,6 @@ import finki.ask.model.Test;
 import finki.ask.model.TestType;
 import finki.ask.repository.TestRepositoryCustom;
 
-@Transactional
 public class TestRepositoryImpl implements TestRepositoryCustom{
 
 	@PersistenceContext

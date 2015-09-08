@@ -2,16 +2,16 @@ package finki.ask.service;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import finki.ask.model.Question;
 import finki.ask.model.Result;
-import finki.ask.model.ResultInfo;
-import finki.ask.model.StudentAnswer;
 import finki.ask.model.Test;
 import finki.ask.model.TestInstance;
 
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_UNCOMMITTED)
 public interface ResultService {
 	
 	public Result save(Result result);
@@ -27,6 +27,8 @@ public interface ResultService {
 	public List<Result> findAllSpecific(Test test, Question question);
 	
 	public Result findById(long id);
+	
+	public Result findSpecificOrCreateIfNotExist(TestInstance testInstance, Test test, Question question);
 	
 	public double sumPoints(TestInstance testInstance, Test test);
 	

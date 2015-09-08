@@ -4,11 +4,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.LockModeType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,9 +44,9 @@ import finki.ask.service.TestInstanceService;
 import finki.ask.service.TestService;
 import finki.ask.view.View;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/tests")
-@CrossOrigin
 public class TestsControllerAPI {
 	
 	@Autowired
@@ -65,7 +70,7 @@ public class TestsControllerAPI {
 	@ResponseBody
 	@JsonView(View.SummaryAPI.class)
 	@RequestMapping(produces = "application/json", method = RequestMethod.GET)
-	private List<Test> findAll(HttpServletRequest request) {
+	public List<Test> findAll(HttpServletRequest request) {
 		if (request.getParameter("type") != null) {
 			try { 
 				TestType type = TestType.valueOf(request.getParameter("type"));
@@ -105,27 +110,17 @@ public class TestsControllerAPI {
 		
 		findByIdValidator(test, password);
 		
-		//if (testInstance == null || !testInstance.getTest().equals(test)) {
+		testInstance = new TestInstance();
+		testInstance.setTest(test);
+		testInstance.setStartTime(new Date());
+		testInstance.setEndTime(new Date(testInstance.getStartTime().getTime() + test.getDuration() * 60000l + 60000l)); // one extra minute
+		testInstanceService.save(testInstance);
 		
-			testInstance = new TestInstance();
-			testInstance.setTest(test);
-			testInstance.setStartTime(new Date());
-			testInstance.setEndTime(new Date(testInstance.getStartTime().getTime() + test.getDuration() * 60000l + 60000l)); // one extra minute
-			testInstanceService.save(testInstance);
-			
-			// TODO
-			// create new session
-			session.setAttribute("testInstance", testInstance);
-			session.setMaxInactiveInterval(test.getDuration() * 60 + 60); // one extra minute
-		//}
-//		else {
-//			Date now = new Date();
-//			if (now.compareTo(test.getEnd()) == 1) {
-//				throw new Exception("The test is not active.");
-//			}
-//			// load already answered questions		
-//		}
-		
+		// TODO
+		// create new session
+		session.setAttribute("testInstance", testInstance);
+		session.setMaxInactiveInterval(test.getDuration() * 60 + 60); // one extra minute
+
 		responseWrapper.setResponseStatus(ResponseStatus.SUCCESS);
 		responseWrapper.setData(test);
 		return responseWrapper;		
@@ -187,22 +182,20 @@ public class TestsControllerAPI {
 		long answeredCorrect = 0;
 		long totalPoints = 0;
 		
-		synchronized (TestsControllerAPI.class) {
-			if (jsonAnswers.size() != 0) {
-				question = questionService.findById(jsonAnswers.get(0).getQuestionId());
-				result = resultService.findSpecific(testInstance, test, question);
-				totalCorrect = question.getType() == QuestionType.MULTIPLE ? 0 : 1;
-				
-				if (result == null) {
-					System.out.println(">>>>>>>>>>>>>>> NEW");
-					result = new Result();
-					result.setTest(test);
-					result.setQuestion(question);
-					result.setTestInstance(testInstance);
-					result.setTotalCorrect(totalCorrect);
-					result = resultService.save(result);
-					Thread.sleep(1000 * 20);
-				}
+		if (jsonAnswers.size() != 0) {
+			question = questionService.findById(jsonAnswers.get(0).getQuestionId());
+			result = resultService.findSpecific(testInstance, test, question);
+			totalCorrect = question.getType() == QuestionType.MULTIPLE ? 0 : 1;
+			
+			if (result == null) {
+				System.out.println(">>>>>>>>>>>>>>> NEW");
+				result = new Result();
+				result.setTest(test);
+				result.setQuestion(question);
+				result.setTestInstance(testInstance);
+				result.setTotalCorrect(totalCorrect);
+				//result = resultService.save(result);
+				Thread.sleep(1000 * 20);
 			}
 		}
 		
