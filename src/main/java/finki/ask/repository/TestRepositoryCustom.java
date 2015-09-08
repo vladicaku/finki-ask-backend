@@ -2,12 +2,12 @@ package finki.ask.repository;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 import finki.ask.model.Test;
 import finki.ask.model.TestType;
 
-@Transactional
+@Transactional()
 public interface TestRepositoryCustom {
 	public List<Test> findAllActive();
 	public List<Test> findActiveByType(TestType type);

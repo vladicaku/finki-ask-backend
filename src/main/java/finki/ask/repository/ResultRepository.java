@@ -1,11 +1,28 @@
 package finki.ask.repository;
 
-import javax.transaction.Transactional;
+import java.util.List;
+
+import javax.persistence.LockModeType;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import finki.ask.model.Result;
-@Transactional
-public interface ResultRepository extends JpaRepository<Result, Long>, ResultRepositoryCustom{
 
+@Transactional(isolation=Isolation.REPEATABLE_READ)
+public interface ResultRepository extends JpaRepository<Result, Long>, ResultRepositoryCustom{
+	
+	@Override
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	Result findOne(Long arg0);
+	
+	@Override
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	List<Result> findAll();
+	
+	@Override
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	<S extends Result> S save(S arg0);
 }

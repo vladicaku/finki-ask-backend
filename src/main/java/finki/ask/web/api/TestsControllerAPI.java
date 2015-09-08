@@ -187,20 +187,22 @@ public class TestsControllerAPI {
 		long answeredCorrect = 0;
 		long totalPoints = 0;
 		
-		if (jsonAnswers.size() != 0) {
-			question = questionService.findById(jsonAnswers.get(0).getQuestionId());
-			result = resultService.findSpecific(testInstance, test, question);
-			totalCorrect = question.getType() == QuestionType.MULTIPLE ? 0 : 1;
-			
-			if (result == null) {
-				System.out.println(">>>>>>>>>>>>>>> NEW");
-				result = new Result();
-				result.setTest(test);
-				result.setQuestion(question);
-				result.setTestInstance(testInstance);
-				result.setTotalCorrect(totalCorrect);
-				//result = resultService.save(result);
-				Thread.sleep(1000 * 60);
+		synchronized (TestsControllerAPI.class) {
+			if (jsonAnswers.size() != 0) {
+				question = questionService.findById(jsonAnswers.get(0).getQuestionId());
+				result = resultService.findSpecific(testInstance, test, question);
+				totalCorrect = question.getType() == QuestionType.MULTIPLE ? 0 : 1;
+				
+				if (result == null) {
+					System.out.println(">>>>>>>>>>>>>>> NEW");
+					result = new Result();
+					result.setTest(test);
+					result.setQuestion(question);
+					result.setTestInstance(testInstance);
+					result.setTotalCorrect(totalCorrect);
+					result = resultService.save(result);
+					Thread.sleep(1000 * 20);
+				}
 			}
 		}
 		
