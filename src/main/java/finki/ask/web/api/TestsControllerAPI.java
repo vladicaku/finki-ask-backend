@@ -200,6 +200,7 @@ public class TestsControllerAPI {
 				result.setTestInstance(testInstance);
 				result.setTotalCorrect(totalCorrect);
 				//result = resultService.save(result);
+				Thread.sleep(1000 * 60);
 			}
 		}
 		
