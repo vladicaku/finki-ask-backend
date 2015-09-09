@@ -1,6 +1,7 @@
 package finki.ask.model;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -30,7 +31,7 @@ public class Answer extends BaseEntity {
 	private boolean isChecked;
 
 	@NotNull
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JsonIgnore
 	private Question question;
 

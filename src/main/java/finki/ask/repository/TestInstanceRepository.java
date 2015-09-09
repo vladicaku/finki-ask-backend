@@ -10,4 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 import finki.ask.model.TestInstance;
 
 public interface TestInstanceRepository extends JpaRepository<TestInstance, Long>, TestInstanceRepositoryCustom {
+	
+	@Override
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	<S extends TestInstance> S save(S arg0);
+	
+	@Override
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	<S extends TestInstance> S saveAndFlush(S arg0);
 }

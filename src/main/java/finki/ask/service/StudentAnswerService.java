@@ -12,7 +12,7 @@ import finki.ask.model.StudentAnswer;
 import finki.ask.model.Test;
 import finki.ask.model.TestInstance;
 
-@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_UNCOMMITTED)
+@Transactional(propagation = Propagation.REQUIRED)
 public interface StudentAnswerService {
 	
 	public StudentAnswer save(StudentAnswer studentAnswer);

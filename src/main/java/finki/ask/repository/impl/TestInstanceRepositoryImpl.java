@@ -14,6 +14,13 @@ public class TestInstanceRepositoryImpl implements TestInstanceRepositoryCustom{
 	@PersistenceContext
 	private EntityManager entityManager;
 
+//	@Override
+//	public TestInstance saveAndFlush(TestInstance testInstance) {
+//		entityManager.persist(testInstance);
+//		entityManager.flush();
+//		return testInstance;
+//	}
+//	
 	@Override
 	public TestInstance findByUUID(UUID uuid) {
 		return (TestInstance) entityManager.createQuery("select ti from TestInstance ti where ti.uuid = :uuid").setParameter("uuid", uuid).getSingleResult();

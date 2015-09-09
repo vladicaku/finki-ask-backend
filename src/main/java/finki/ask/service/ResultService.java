@@ -11,7 +11,7 @@ import finki.ask.model.Result;
 import finki.ask.model.Test;
 import finki.ask.model.TestInstance;
 
-@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.READ_UNCOMMITTED)
+@Transactional(propagation = Propagation.REQUIRED)
 public interface ResultService {
 	
 	public Result save(Result result);

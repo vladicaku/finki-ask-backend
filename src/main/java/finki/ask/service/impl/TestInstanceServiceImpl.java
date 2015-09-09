@@ -21,8 +21,9 @@ public class TestInstanceServiceImpl implements TestInstanceService{
 	
 	@Override
 	public TestInstance save(TestInstance testInstance) {
-		return testInstanceRepository.save(testInstance);
+		return testInstanceRepository.saveAndFlush(testInstance);
 	}
+	
 
 	@Override
 	public List<TestInstance> findAll() {

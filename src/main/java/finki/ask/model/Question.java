@@ -41,7 +41,7 @@ public class Question extends BaseEntity {
 	private int points;
 
 	@NotNull
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JsonIgnore
 	private Test test;
 

@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import finki.ask.model.ResultInfo;
 
-@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+@Transactional(propagation = Propagation.REQUIRED)
 public interface ResultInfoService {
 	
 	public List<ResultInfo> getResultInfoForTest(long id);

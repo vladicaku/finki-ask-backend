@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import finki.ask.model.TestInstance;
 
-@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+@Transactional(propagation = Propagation.REQUIRED)
 public interface TestInstanceService {
 	
 	public TestInstance save(TestInstance testInstance);

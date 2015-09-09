@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import finki.ask.model.Test;
 import finki.ask.model.TestType;
 
-//@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+@Transactional(propagation = Propagation.REQUIRED)
 public interface TestService {
 	
 	public Test save(Test test);

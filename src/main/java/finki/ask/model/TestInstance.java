@@ -30,6 +30,8 @@ public class TestInstance extends BaseEntity {
 	
 	@NotNull
 	private Date endTime;
+	
+	private int quasiLocker;
 
 	public TestInstance() {
 	}
@@ -72,5 +74,13 @@ public class TestInstance extends BaseEntity {
 
 	public void setStudentIndex(long studentIndex) {
 		this.studentIndex = studentIndex;
+	}
+
+	public int getQuasiLocker() {
+		return quasiLocker;
+	}
+
+	public void setQuasiLocker(int quasiLocker) {
+		this.quasiLocker = quasiLocker;
 	}
 }

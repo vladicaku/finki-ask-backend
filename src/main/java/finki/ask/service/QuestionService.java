@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import finki.ask.model.Question;
 
-@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+@Transactional(propagation = Propagation.REQUIRED)
 public interface QuestionService {
 	
 	public Question save(Question question);
