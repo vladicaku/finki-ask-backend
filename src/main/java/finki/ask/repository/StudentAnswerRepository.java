@@ -13,15 +13,12 @@ import finki.ask.model.StudentAnswer;
 
 public interface StudentAnswerRepository extends JpaRepository<StudentAnswer, Long>, StudentAnswerRepositoryCustom{
 
-	@Override
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	List<StudentAnswer> findAll();
 	
-	@Override
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	StudentAnswer findOne(Long arg0);
 	
-	@Override
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	<S extends StudentAnswer> S save(S arg0);
 	

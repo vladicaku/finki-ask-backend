@@ -13,15 +13,14 @@ import finki.ask.model.Result;
 
 public interface ResultRepository extends JpaRepository<Result, Long>, ResultRepositoryCustom{
 	
-	@Override
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	Result findOne(Long arg0);
 	
-	@Override
+
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	List<Result> findAll();
 	
-	@Override
+
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	<S extends Result> S save(S arg0);
 	
