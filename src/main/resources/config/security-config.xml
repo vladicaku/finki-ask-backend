@@ -11,23 +11,22 @@
     
     <beans:bean id="http403EntryPoint" class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint">
     </beans:bean>
+    <!-- entry-point-ref="http403EntryPoint"  -->
     
-	<http use-expressions="true" auto-config="false" entry-point-ref="http403EntryPoint">
-		
+	<http use-expressions="true" auto-config="true" >	
 		<intercept-url pattern="/admin/*" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/app/**" access="hasRole('ROLE_ADMIN')" />
 		
 		<!-- access denied page -->
 		<access-denied-handler error-page="/403" />
 		
-		<!-- 
+		<!-- login-page="/login" -->
+		<!-- default-target-url="/welcome" 
+			authentication-failure-url="/login?error" -->
 		<form-login 
-		    login-page="/login" 
-		    default-target-url="/welcome" 
-			authentication-failure-url="/login?error" 
 			username-parameter="username"
 			password-parameter="password" />
 		<logout logout-success-url="/login?logout"  />
-		 -->
 		 
 		<!-- enable csrf protection 
 		<csrf/>

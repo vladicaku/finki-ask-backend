@@ -28,10 +28,6 @@
 	<!-- JPA config (we will use JPA instead of Hibernate) -->
 	<beans>
 		<jpa:repositories base-package="finki.ask.repository" />
-		
-		<!--  
-		<bean id="corsFilter" class="finki.ask.filter.CorsFilter" />
-		-->
 		 
 		<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
 			p:dataSource-ref="dataSource">
@@ -50,10 +46,6 @@
 			
 		<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
 		
-		<!-- 
-		<bean id="vaceFilter1" class="finki.ask.filter.VaceFilter" />
-		<bean id="corsFilter1" class="finki.ask.filter.CorsFilter" />
-		 -->
 	</beans>
 	
 	

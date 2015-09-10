@@ -7,17 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.fasterxml.jackson.annotation.JsonView;
 
 import finki.ask.model.Test;
 import finki.ask.model.TestType;
+import finki.ask.model.User;
 import finki.ask.repository.TestRepository;
 import finki.ask.service.TestService;
-import finki.ask.view.View;
 
 @Service
 public class TestServiceImpl implements TestService {
@@ -46,8 +41,8 @@ public class TestServiceImpl implements TestService {
 	}
 	
 	@Override
-	public Test findByIdActive(long id) {
-		return testRepository.findByIdActive(id);
+	public Test findActiveById(long id) {
+		return testRepository.findActiveById(id);
 	}
 
 	@Override
@@ -70,36 +65,24 @@ public class TestServiceImpl implements TestService {
 		return populateIsActive(testRepository.findByName(name));
 	}
 
-	/**
-	 * @param name
-	 *            Question name
-	 * @param id
-	 *            Creator (user) id
-	 */
 	@Override
-	public List<Test> findByNameForUser(String name, Long id) {
-		return populateIsActive(testRepository.findByNameForUser(name, id));
-	}
-
-	/**
-	 * @param name
-	 *            Question name
-	 * @param id
-	 *            Creator (user) id
-	 */
-	@Override
-	public List<Test> findByNameExceptForUser(String name, Long id) {
-		return populateIsActive(testRepository.findByNameExceptForUser(name, id));
+	public List<Test> findByNameForUser(String name, User user) {
+		return populateIsActive(testRepository.findByNameForUser(name, user));
 	}
 
 	@Override
-	public List<Test> findForUser(long id) {
-		return populateIsActive(testRepository.findForUser(id));
+	public List<Test> findByNameExceptForUser(String name, User user) {
+		return populateIsActive(testRepository.findByNameExceptForUser(name, user));
 	}
 
 	@Override
-	public List<Test> findOtherTestsExceptForUser(long id) {
-		return populateIsActive(testRepository.findOtherTestsExceptForUser(id));
+	public List<Test> findForUser(User user) {
+		return populateIsActive(testRepository.findForUser(user));
+	}
+
+	@Override
+	public List<Test> findOtherTestsExceptForUser(User user) {
+		return populateIsActive(testRepository.findOtherTestsExceptForUser(user));
 	}
 
 	@Override

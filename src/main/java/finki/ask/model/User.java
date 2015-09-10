@@ -11,7 +11,10 @@ import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.sun.istack.NotNull;
+
+import finki.ask.view.View;
 
 @Entity
 @Table(name = "users")
@@ -19,6 +22,7 @@ public class User extends BaseEntity {
 
 	@NotBlank
 	@Column(unique=true)
+	@JsonView(View.Public.class)
 	private String username;
 	
 	@NotBlank
@@ -26,15 +30,19 @@ public class User extends BaseEntity {
 	
 	@NotBlank
 	@Column(unique=true)
+	@JsonView(View.Public.class)
 	private String email;
 	
 	@NotBlank
+	@JsonView(View.Public.class)
 	private String firstAndLastName;
 	
 	@NotNull
+	@JsonView(View.Public.class)
 	private boolean enabled;
 	
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+	@JsonView(View.Public.class)
 	private Set<UserRole> userRole = new HashSet<UserRole>(0);
 
 	public User() {

@@ -11,37 +11,20 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<!-- View and Error config -->
-	<import resource="mvc-view-config.xml" />
-	<import resource="mvc-errors-config.xml" />
-
-	<!-- POJOs labeled with the @Controller and @Service annotations are auto-detected. -->
+	<!-- View and Error config  -->
+	<!-- <import resource="mvc-view-config.xml" />  -->
+	<!--  <import resource="mvc-errors-config.xml" /> -->
+	
+	<mvc:annotation-driven />
+			
 	<context:component-scan base-package="finki.ask.web" />
 
-	<mvc:annotation-driven />
-
-	<!-- all resources inside folder src/main/webapp/resources are mapped so 
-		they can be refered to inside JSP files (see header.jsp for more details) -->
-
-	<!-- The default path  
-	<mvc:resources mapping="/**" location="/app/" />
-
+	<mvc:resources mapping="/static/**" location="/app/" />
+	<mvc:resources mapping="/static1/**" location="/src/main/app/" />
 	
-	<mvc:view-controller path="/" view-name="index" />
-	-->
-
-	<!-- serve static resources (*.html, ...) from src/main/webapp/ -->
-	<mvc:default-servlet-handler />
-
-	<!-- - Message source for this context, loaded from localized "messages_xx" 
-		files. - Files are stored inside src/main/resources -->
-	<bean id="messageSource"
-		class="org.springframework.context.support.ResourceBundleMessageSource"
-		p:basename="messages/messages" />
-
-	<!-- Needed for file upload -->
-	<bean id="multipartResolver"
-		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-	</bean>
-
+	<!-- The default path 
+	<mvc:view-controller path="/" view-name="index" /> -->
+	
+	<mvc:default-servlet-handler /> 
+	
 </beans>

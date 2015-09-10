@@ -16,9 +16,9 @@
   </filter-mapping>
    -->
    
-  <context-param>
+    <context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath:config/business-config.xml</param-value>
+		<param-value>classpath:config/business-config.xml; classpath:config/security-config.xml</param-value>
 		<!-- za security vo param-value se dodava: -->
 		<!--  ; classpath:config/security-config.xml -->
 	</context-param>
@@ -43,7 +43,7 @@
 	</servlet-mapping>
 	
 	
-	<!-- Spring Secuirty Filter Chain
+	<!-- Spring Secuirty Filter Chain -->
 	<filter>
 		<filter-name>springSecurityFilterChain</filter-name>
 		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
@@ -52,5 +52,5 @@
 		<filter-name>springSecurityFilterChain</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-	-->
+	
 </web-app>

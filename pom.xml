@@ -23,7 +23,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<!-- Spring -->
-		<spring-framework.version>4.2.0.RELEASE</spring-framework.version>
+		<spring-framework.version>4.2.1.RELEASE</spring-framework.version>
 		<spring-data-jpa.version>1.8.2.RELEASE</spring-data-jpa.version>
 		<spring-security.version>4.0.2.RELEASE</spring-security.version>
 		<jasperreports.version>4.0.2</jasperreports.version>

@@ -98,7 +98,7 @@ public class SAEngineServiceImpl implements finki.ask.service.SAEngineService{
 				result.setQuestion(question);
 				result.setTestInstance(testInstance);
 				result.setTotalCorrect(totalCorrect);
-				Thread.sleep(1000 * 10);
+				//Thread.sleep(1000 * 10);
 			}
 		}
 		

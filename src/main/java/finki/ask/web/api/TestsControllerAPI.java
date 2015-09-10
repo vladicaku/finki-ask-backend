@@ -50,6 +50,7 @@ public class TestsControllerAPI {
 	@Autowired
 	private ResultService resultService;
 	
+	
 	@ResponseBody
 	@JsonView(View.SummaryAPI.class)
 	@RequestMapping(produces = "application/json", method = RequestMethod.GET)
@@ -67,14 +68,14 @@ public class TestsControllerAPI {
 			return testService.findAllActive();
 		}
 	}
-
+	
 	@ResponseBody
 	@JsonView(View.CompleteAPI.class)
 	@RequestMapping(value="/{id}", produces = "application/json", method = RequestMethod.GET)
 	public ResponseWrapper findById(@PathVariable long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		ResponseWrapper responseWrapper = new ResponseWrapper();
 
-		Test test = testService.findByIdActive(id);
+		Test test = testService.findActiveById(id);
 		HttpSession session = request.getSession(true);
 		TestInstance testInstance = (TestInstance) session.getAttribute("testInstance");
 		String password = request.getParameter("password");

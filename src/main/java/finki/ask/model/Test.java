@@ -50,10 +50,10 @@ public class Test extends BaseEntity {
 	@JsonView(View.Public.class)
 	private Date dateCreated;
 
-	//@NotNull
-	//@ManyToOne
-	//@JsonView(View.SummaryAdmin.class)
-	//private long creator;
+	@NotNull
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JsonView(View.SummaryAdmin.class)
+	private User creator;
 
 	@NotNull
 	@DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
@@ -116,13 +116,13 @@ public class Test extends BaseEntity {
 		this.dateCreated = dateCreated;
 	}
 
-//	public User getCreator() {
-//		return creator;
-//	}
-//
-//	public void setCreator(User creator) {
-//		this.creator = creator;
-//	}
+	public User getCreator() {
+		return creator;
+	}
+
+	public void setCreator(User creator) {
+		this.creator = creator;
+	}
 
 	public void setPublic(boolean isPublic) {
 		this.isPublic = isPublic;
