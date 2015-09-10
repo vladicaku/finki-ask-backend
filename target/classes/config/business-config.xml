@@ -49,6 +49,11 @@
 			p:entityManagerFactory-ref="entityManagerFactory" />
 			
 		<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+		
+		<!-- 
+		<bean id="vaceFilter1" class="finki.ask.filter.VaceFilter" />
+		<bean id="corsFilter1" class="finki.ask.filter.CorsFilter" />
+		 -->
 	</beans>
 	
 	

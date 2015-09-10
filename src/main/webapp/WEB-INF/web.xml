@@ -5,11 +5,22 @@
                         version="3.0">
   <display-name>Archetype Created Web Application</display-name>
   
+   <!-- 
+  <filter>
+        <filter-name>VaceFilter</filter-name>
+        <filter-class>finki.ask.filter.VaceFilter</filter-class>
+    </filter>
+  <filter-mapping>
+    <filter-name>VaceFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+   -->
+   
   <context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>classpath:config/business-config.xml</param-value>
 		<!-- za security vo param-value se dodava: -->
-		<!--  ;classpath:spring/security-rest-config.xml -->
+		<!--  ; classpath:config/security-config.xml -->
 	</context-param>
 
 	<listener>
@@ -31,15 +42,15 @@
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 	
-	<!-- Cors Filter by Vladica Jovanovski. To be removed and replaced with Spring Security -->
-	<!-- For testing only. To be removed in production. 
-	<filter>
-	    <filter-name>corsFilter</filter-name>
-	    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-	</filter>
 	
+	<!-- Spring Secuirty Filter Chain
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
 	<filter-mapping>
-	    <filter-name>corsFilter</filter-name>
-	    <url-pattern>/*</url-pattern>
-	</filter-mapping> -->
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	-->
 </web-app>

@@ -1,0 +1,59 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+
+    <!-- enable use-expressions -->
+    <!-- auto-config="true"  -->
+    
+    <beans:bean id="http403EntryPoint" class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint">
+    </beans:bean>
+    
+	<http use-expressions="true" auto-config="false" entry-point-ref="http403EntryPoint">
+		
+		<intercept-url pattern="/admin/*" access="hasRole('ROLE_ADMIN')" />
+		
+		<!-- access denied page -->
+		<access-denied-handler error-page="/403" />
+		
+		<!-- 
+		<form-login 
+		    login-page="/login" 
+		    default-target-url="/welcome" 
+			authentication-failure-url="/login?error" 
+			username-parameter="username"
+			password-parameter="password" />
+		<logout logout-success-url="/login?logout"  />
+		 -->
+		 
+		<!-- enable csrf protection 
+		<csrf/>
+		-->
+		<!-- Disable CSRF -->
+		<csrf disabled="true"/>
+		
+		<!-- maybe cookie saver -->
+		<remember-me />
+	</http>
+	
+	<!-- Select users and user_roles from database -->
+	<!-- Original from mkyong) authorities-by-username-query="select username, role from user_roles where username =?  " /> -->
+	<authentication-manager alias="authenticationManager">
+	  <authentication-provider>
+	  	<!-- Structure must be kept (columns and column's name), no aditional rows should be present -->
+		<!-- username, password, enabled    for users-by-username-query -->
+		<!-- username, authorities          for authorities-by-username-query- -->
+		<jdbc-user-service data-source-ref="dataSource"
+		  users-by-username-query=
+		    "select username, password, enabled from users where username=?"
+		  authorities-by-username-query="select u1.username, u2.role as authorities from users u1, user_roles u2 where u1.id = u2.user_id and u1.username=?" />
+		  <!-- TODO -->
+		  <!-- implement hash and salt -->
+		  <password-encoder hash="plaintext"/>
+	  </authentication-provider>
+	</authentication-manager>
+
+</beans:beans>

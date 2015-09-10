@@ -19,6 +19,7 @@ import finki.ask.model.Result;
 import finki.ask.model.StudentAnswer;
 import finki.ask.model.Test;
 import finki.ask.model.TestInstance;
+import finki.ask.model.TestType;
 import finki.ask.service.AnswerService;
 import finki.ask.service.QuestionService;
 import finki.ask.service.ResultService;
@@ -124,28 +125,34 @@ public class SAEngineServiceImpl implements finki.ask.service.SAEngineService{
 			}
 		
 			// calculate isCorrect flag ( reason: faster graph calculations)
-			if (question.getType() == QuestionType.TEXT) {
-				if (jsonAnswer.getText() == null) {
-					studentAnswer.setCorrect(false);
+			if (test.getType() != TestType.SURVEY) {
+				if (question.getType() == QuestionType.TEXT) {
+					if (jsonAnswer.getText() == null) {
+						studentAnswer.setCorrect(false);
+					}
+					else {
+						String correctAnswer = answer.getCorrect().trim().toLowerCase();
+						String newAnswer = jsonAnswer.getText().trim().toLowerCase();
+						studentAnswer.setCorrect(correctAnswer.equals(newAnswer));
+						studentAnswer.setText(jsonAnswer.getText());
+					}
 				}
-				else {
-					String correctAnswer = answer.getCorrect().trim().toLowerCase();
-					String newAnswer = jsonAnswer.getText().trim().toLowerCase();
-					studentAnswer.setCorrect(correctAnswer.equals(newAnswer));
+				else if (question.getType() == QuestionType.SINGLE || question.getType() == QuestionType.MULTIPLE) {
+					studentAnswer.setCorrect(answer.isChecked() == jsonAnswer.isChecked());
+				}
+				else if (question.getType() == QuestionType.RANGE) {
 					studentAnswer.setText(jsonAnswer.getText());
+					String rangeCorrect = studentAnswer.getText().split(":")[2];
+					studentAnswer.setCorrect(answer.getCorrect().equals(rangeCorrect));
 				}
-			}
-			else if (question.getType() == QuestionType.SINGLE || question.getType() == QuestionType.MULTIPLE) {
-				studentAnswer.setCorrect(answer.isChecked() == jsonAnswer.isChecked());
-			}
-			else if (question.getType() == QuestionType.RANGE) {
-				studentAnswer.setText(jsonAnswer.getText());
-				String rangeCorrect = studentAnswer.getText().split(":")[2];
-				studentAnswer.setCorrect(answer.getCorrect().equals(rangeCorrect));
 			}
 			
 			// persist answer
 			studentAnswerService.save(studentAnswer);
+			
+			if (test.getType() == TestType.SURVEY) {
+				continue;
+			}
 			
 			// count answered correct for the result
 			if (studentAnswer.isCorrect() && (question.getType() == QuestionType.TEXT || question.getType() == QuestionType.RANGE)) {
@@ -167,6 +174,12 @@ public class SAEngineServiceImpl implements finki.ask.service.SAEngineService{
 		result.setAnsweredCorrect(answeredCorrect < 0 ? 0 : answeredCorrect);
 		result.setTotalPoints(result.getAnsweredCorrect() * 1.0 / result.getTotalCorrect() * question.getPoints());
 
+		// make universal for Survey
+		if (test.getType() == TestType.SURVEY) {
+			result.setTotalPoints(0);
+			result.setAnsweredCorrect(0);
+			result.setTotalCorrect(0);
+		}
 		// persist result
 		resultService.save(result);
 		

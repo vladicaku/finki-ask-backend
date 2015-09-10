@@ -3,5 +3,6 @@ package finki.ask.api.model;
 public enum ResponseStatus {
 	SUCCESS,
 	ERROR,
-	RESULTS
+	RESULTS,
+	WRONG_CREDENTIALS
 }
