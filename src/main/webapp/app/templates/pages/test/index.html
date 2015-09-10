@@ -9,7 +9,7 @@
 </style>
 
 <div class="col-xs-12">
-    <form name="testForm" class="form-horizontal" ng-submit="testForm.$valid && submit()">
+    <form name="testForm" class="form-horizontal">
         <fieldset>
             <div class="panel panel-material-blue shadow-z-2">
                 <div class="panel-heading">
@@ -191,7 +191,7 @@
     </div>
 
     <div class="well">
-        <button class="btn btn-success" type="submit"><i class="glyphicon glyphicon-ok"></i>  Save</button>
+        <button ng-click="submit1()" class="btn btn-success" type="submit"><i class="glyphicon glyphicon-ok"></i>  Save</button>
         <a ng-click="cancel()" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i>  Cancel</a>
     </div>
 

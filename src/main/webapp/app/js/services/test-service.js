@@ -12,7 +12,7 @@ angular.module('finkiAsk').factory('TestService', ['$http', function ($http) {
     service.url = 'http://localhost:8080/ask/admin/tests';
     service.urlOtherTest = 'http://localhost:8080/ask/admin/other/tests';
 
-    service.delete = function (id) {
+    service.deleteTest = function (id) {
         return $http.delete(this.url + '/' + id);
     };
 

@@ -270,8 +270,7 @@ angular.module('finkiAsk').controller('TestController', ['$scope', '$filter', 'T
     };
 
     // Submit methods
-    $scope.submit = function () {
-    	alert("Submited");
+    $scope.submit1 = function () {
         // Concatenate date and time into one string
         var date = $filter('date')($scope.test.startDate, "dd/MM/yyyy");
         var time = $filter('date')($scope.test.startTime, "HH:mm");
